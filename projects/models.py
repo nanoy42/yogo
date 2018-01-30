@@ -3,18 +3,26 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+
 class Project(models.Model):
     title = models.CharField(max_length=255)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_projects')
-    creationDate = models.DateField(auto_now_add = True)
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='owned_projects')
+    creationDate = models.DateField(auto_now_add=True)
     users = models.ManyToManyField(User, related_name='membered_projects')
-    actif = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
     description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)
     color = models.CharField(max_length=6)
+
+    def __str__(self):
+        return self.name
 
 
 class Task(models.Model):
@@ -31,12 +39,16 @@ class Task(models.Model):
     projet = models.ForeignKey(Project, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    userAssigned = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    tags = models.ManyToManyField(Tag,blank=True)
+    userAssigned = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     creationDate = models.DateField(auto_now_add=True)
     statusChangeDate = models.DateField(auto_now_add=True)
-    deadline = models.DateField(blank=True)
-    status = models.CharField(choices=STATUS_CHOICES, default=State.TODO, max_length=4)
-    prerequisites = models.ManyToManyField("Task",blank=True)
-    actif = models.BooleanField(default=True)
+    deadline = models.DateField(blank=True, null=True)
+    status = models.CharField(choices=STATUS_CHOICES,
+                              default=State.TODO, max_length=4)
+    prerequisites = models.ManyToManyField("Task", blank=True)
+    active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.projet.title + ">>" + self.title

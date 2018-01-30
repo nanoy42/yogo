@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Mes projets</h3>
+<div class="list-group">
+{% for project in projects %}
+<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+		<h5 class="mb-1">{{project.title}}</h5>
+		<small>Prop. : {{project.owner}}</small>
+    </div>
+	<p class="mb-1">{{project.description}}</p>
+	<small><i class="fa fa-calendar"></i> {{project.creationDate}} <i class="fa fa-users"></i> {{project.users.count}} <i class="fa fa-tasks"></i> {{project.task_set.count}}</small>
+  </a>
+{% endfor %}
+</div>
+{% endblock %}
