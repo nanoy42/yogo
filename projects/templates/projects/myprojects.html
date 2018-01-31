@@ -7,7 +7,7 @@
 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
     <div class="d-flex w-100 justify-content-between">
 		<h5 class="mb-1">{{project.title}}</h5>
-		<small>Prop. : {{project.owner}}</small>
+		<small>{% if project.active %}Actif{% else %}Inactif{% endif %}</small>
     </div>
 	<p class="mb-1">{{project.description}}</p>
 	<small><i class="fa fa-calendar"></i> {{project.creationDate}} <i class="fa fa-users"></i> {{project.users.count}} <i class="fa fa-tasks"></i> {{project.task_set.count}}</small>

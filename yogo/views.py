@@ -2,4 +2,5 @@ from django.shortcuts import render
 
 
 def home(request):
-    return render(request, "home.html")
+    active = 1
+    return render(request, "home.html", {'active': active})
