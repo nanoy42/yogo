@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+<br>
+<h3>Mes tâches</h3>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" id="link_div_doing" data-target="div_doing" href="#">Doing</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="link_div_todo" data-target="div_todo" href="#">To Do</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="link_div_done" data-target="div_done" href="#">Done</a>
+  </li>
+</ul>
+<div id="div_doing" style="display:block">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Projet</th>
+      <th scope="col">Tâche</th>
+      <th scope="col">Changer le statut</th>
+      <th scope="col">Administrer</th>
+    </tr>
+  </thead>
+  <tbody>
+	  {% for task in doing %}
+    <tr>
+		<td><a href="#">{{task.project}}</a></td>
+		<td><a href="#">{{task.title}}</a></td>
+		<td><a href="#" class="btn btn-outline-success btn-sm"><i class="fa fa-check-circle"></i> Done</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-times-circle"></i> To Do</a></td>
+		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</td>
+    </tr>
+	{% endfor %}
+  </tbody>
+</table>
+</div>
+<div id="div_todo" style="display:none">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Projet</th>
+      <th scope="col">Tâche</th>
+      <th scope="col">Changer le statut</th>
+      <th scope="col">Administrer</th>
+    </tr>
+  </thead>
+  <tbody>
+	  {% for task in todo %}
+    <tr>
+		<td><a href="#">{{task.project}}</a></td>
+		<td><a href="#">{{task.title}}</a></td>
+		<td><a href="#" class="btn btn-outline-info btn-sm"><i class="fa fa-cogs"></i> Doing</a> <a href="#" class="btn btn-outline-success btn-sm"><i class="fa fa-check-circle"></i> Done</a></td>
+		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</td>
+    </tr>
+	{% endfor %}
+  </tbody>
+</table>
+
+</div>
+<div id="div_done" style="display:none">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Projet</th>
+      <th scope="col">Tâche</th>
+      <th scope="col">Changer le statut</th>
+      <th scope="col">Administrer</th>
+    </tr>
+  </thead>
+  <tbody>
+	  {% for task in done %}
+    <tr>
+		<td><a href="#">{{task.project}}</a></td>
+		<td><a href="#">{{task.title}}</a></td>
+		<td><a href="#" class="btn btn-outline-info btn-sm"><i class="fa fa-cogs"></i> Doing</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-times-circle"></i> To Do</a></td>
+		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</td>
+    </tr>
+	{% endfor %}
+  </tbody>
+</table>
+
+</div>
+
+	<script>
+		$(document).ready(function(){
+			prec = "div_doing"
+			$(".nav-link").click(function(){
+				$("#" + prec).attr('style','display:none');
+				$("#link_" + prec).removeClass("active");
+				$("#" + $(this).attr('data-target')).attr('style','display:block');
+				$("#link_" + $(this).attr('data-target')).addClass('active');
+				prec = $(this).attr('data-target');
+			});
+		});
+	</script>
+{% endblock %}

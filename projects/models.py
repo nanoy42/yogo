@@ -36,7 +36,7 @@ class Task(models.Model):
         (State.DOING, 'Doing'),
         (State.DONE, 'Done')
     )
-    projet = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     userAssigned = models.ForeignKey(
@@ -51,4 +51,4 @@ class Task(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.projet.title + ">>" + self.title
+        return self.project.title + ">>" + self.title
