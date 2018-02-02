@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% block content %}
-<br>
 <h3>{{title}}</h3>
 <form action="" method="post" class="form">
 	{% csrf_token %}
 	{% bootstrap_form form %}
-	<button class="btn btn-outline-primary"><i class="fa fa-star"></i> Créer ou modifier</button>
+	<button class="btn btn-outline-primary"><i class="fa fa-{{icon}}"></i> {{bouton}}</button>
 </form>
 <br>
 <br>

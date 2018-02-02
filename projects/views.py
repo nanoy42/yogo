@@ -31,4 +31,4 @@ def newProject(request):
         form.instance.users.add(request.user)
         form.save()
         return redirect(reverse('home'))
-    return render(request, 'form.html', {'form': form, 'active': active, 'title': "Nouveau projet"})
+    return render(request, 'form.html', {'form': form, 'active': active, 'title': "Nouveau projet", 'bouton': 'Créer le projet', 'icon': 'star'})
