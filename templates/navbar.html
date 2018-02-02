@@ -22,12 +22,12 @@
 			{{request.user}}
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-			<a class="dropdown-item" href="#"><i class="fa fa-plus"></i> Créer un nouveau projet</a>
+			<a class="dropdown-item" href="{% url 'projects:newproject' %}"><i class="fa fa-plus"></i> Créer un nouveau projet</a>
 		  <div class="dropdown-divider"></div>
 		  <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Accéder à mon profil</a>
 		  <a class="dropdown-item" href="#"><i class="fa fa-life-ring"></i> Aide</a>
           <div class="dropdown-divider"></div>
-		  <a class="dropdown-item" href="#"><i class="fa fa-sign-out-alt"></i> Se déconnecter</a>
+		  <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out-alt"></i> Se déconnecter</a>
         </div>
       </li>
 	</ul>

@@ -5,4 +5,5 @@ app_name = "projects"
 urlpatterns = [
     path('myprojects', views.myprojects, name="myprojects"),
     path('mytasks', views.mytasks, name="mytasks"),
+    path('newproject', views.newProject, name="newproject"),
 ]

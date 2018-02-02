@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from .models import Task
+from .forms import ProjectForm
 # Create your views here.
 
 
@@ -18,3 +20,15 @@ def mytasks(request):
     done_tasks = Task.objects.filter(
         userAssigned=request.user).filter(status=Task.State.DONE)
     return render(request, 'projects/mytasks.html', {'active': active, 'todo': todo_tasks, 'doing': doing_tasks, 'done': done_tasks})
+
+
+def newProject(request):
+    active = 2
+    form = ProjectForm(request.POST or None)
+    if(form.is_valid()):
+        form.instance.owner = request.user
+        form.save()
+        form.instance.users.add(request.user)
+        form.save()
+        return redirect(reverse('home'))
+    return render(request, 'form.html', {'form': form, 'active': active, 'title': "Nouveau projet"})
