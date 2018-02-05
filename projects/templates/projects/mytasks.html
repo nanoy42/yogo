@@ -25,7 +25,7 @@
   <tbody>
 	  {% for task in doing %}
     <tr>
-		<td><a href="#">{{task.project}}</a></td>
+		<td><a href="{% url 'projects:project' task.project.pk %}">{{task.project}}</a></td>
 		<td><a href="#">{{task.title}}</a></td>
 		<td><a href="#" class="btn btn-outline-success btn-sm"><i class="fa fa-check-circle"></i> Done</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-times-circle"></i> To Do</a></td>
 		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</td>
@@ -47,7 +47,7 @@
   <tbody>
 	  {% for task in todo %}
     <tr>
-		<td><a href="#">{{task.project}}</a></td>
+		<td><a href="{% url 'projects:project' task.project.pk %}">{{task.project}}</a></td>
 		<td><a href="#">{{task.title}}</a></td>
 		<td><a href="#" class="btn btn-outline-info btn-sm"><i class="fa fa-cogs"></i> Doing</a> <a href="#" class="btn btn-outline-success btn-sm"><i class="fa fa-check-circle"></i> Done</a></td>
 		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</td>
@@ -70,7 +70,7 @@
   <tbody>
 	  {% for task in done %}
     <tr>
-		<td><a href="#">{{task.project}}</a></td>
+		<td><a href="{% url 'projects:project' task.project.pk %}">{{task.project}}</a></td>
 		<td><a href="#">{{task.title}}</a></td>
 		<td><a href="#" class="btn btn-outline-info btn-sm"><i class="fa fa-cogs"></i> Doing</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-times-circle"></i> To Do</a></td>
 		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</td>

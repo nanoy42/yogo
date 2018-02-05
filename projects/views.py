@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Task
+from .models import Task, Project
 from .forms import ProjectForm
 # Create your views here.
 
@@ -32,3 +32,11 @@ def newProject(request):
         form.save()
         return redirect(reverse('home'))
     return render(request, 'form.html', {'form': form, 'active': active, 'title': "Nouveau projet", 'bouton': 'Créer le projet', 'icon': 'star'})
+
+
+def project(request, id):
+    project = Project.objects.get(pk=id)
+    count_task_todo = project.task_set.filter(status=Task.State.TODO).count()
+    count_task_doing = project.task_set.filter(status=Task.State.DOING).count()
+    count_task_done = project.task_set.filter(status=Task.State.DONE).count()
+    return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': count_task_todo, 'doing': count_task_doing, 'done': count_task_done})

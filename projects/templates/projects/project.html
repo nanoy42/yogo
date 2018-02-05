@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{project.title}}</h2>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Taches</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Projet</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Gérer les membres</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Modifier le projet</a>
+  </li>
+</ul>
+<div id="div-tasks" style="display:none">
+ajouter une tache + liste des taches réparties en colonne + gestion des taches
+</div>
+<div id="div-project" style="display:block">
+<table class="table table-striped">
+  <tbody>
+    <tr>
+      <td colspan="2" width="50%">Description</td>
+	  <td colspan="2" width="50%">{{project.description}}</td>
+    </tr>
+    <tr>
+      <td>Création</td>
+	  <td>{{project.creationDate}}</td>
+      <td>Créateur</td>
+	  <td>{{project.owner}}</td>
+    </tr>
+    <tr>
+      <td>Projet actif</td>
+	  <td>{% if project.active %}Oui{% else %}Non{% endif %}</td>
+      <td>Nombre de membres</td>
+	  <td>{{project.users.count}}</td>
+    </tr>
+	<tr>
+		<td>Nombre de tâches</td>
+		<td>{{project.task_set.count}}</td>
+		<td>Nombre de tâches To Do</td>
+		<td>{{todo}}</td>
+	</tr>
+	<tr>
+		<td>Nombre de tâches Doing</td>
+		<td>{{doing}}</td>
+		<td>Nombre de tâches Done</td>
+		<td>{{done}}</td>
+  </tbody>
+</table>
+</div>
+<div id="div-members" style="display:block">
+<br>
+<h5>Ajouter un membre</h5>
+<hr>
+<h5>Liste des membres</h5>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Nom d'utilisateur</th>
+			<th>Nombre de tâches papsées</th>
+			<th>Role</th>
+			<th>Administrer</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for member in project.users.all %}
+		<tr>
+			<td>{{member.username}}</td>
+			<td></td>
+			<td></td>
+			<td><a class="btn btn-outline-danger" href="#"><i class="fa fa-times"></i> Retirer du projet</a> </td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</div>
+<div id="div-update" style="display:none">
+
+</div>
+{% endblock %}

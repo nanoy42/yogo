@@ -6,4 +6,5 @@ urlpatterns = [
     path('myprojects', views.myprojects, name="myprojects"),
     path('mytasks', views.mytasks, name="mytasks"),
     path('newproject', views.newProject, name="newproject"),
+    path('project/<int:id>', views.project, name="project"),
 ]
