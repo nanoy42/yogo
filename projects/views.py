@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import Task, Project
-from .forms import ProjectForm
+from .forms import ProjectForm, addMemberForm
+from django.contrib import messages
+from django.contrib.auth.models import User
 # Create your views here.
 
 
@@ -39,4 +41,26 @@ def project(request, id):
     count_task_todo = project.task_set.filter(status=Task.State.TODO).count()
     count_task_doing = project.task_set.filter(status=Task.State.DOING).count()
     count_task_done = project.task_set.filter(status=Task.State.DONE).count()
-    return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': count_task_todo, 'doing': count_task_doing, 'done': count_task_done})
+    taken_tasks = []
+    for user in project.users.all():
+        taken_tasks.append(project.task_set.filter(userAssigned=user).count())
+    memberForm = addMemberForm(request.POST or None, projectId=id)
+    if(memberForm.is_valid()):
+        member = memberForm.cleaned_data['member']
+        if member in project.users.all():
+            messages.error(request, 'Cet utilisateur est déjà dans le projet')
+        else:
+            project.users.add(member)
+            messages.success(request, "L'utilisateur a bien été ajouté")
+    return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': count_task_todo, 'doing': count_task_doing, 'done': count_task_done, 'taken_tasks': taken_tasks, 'addMemberForm': memberForm})
+
+
+def deleteUserFromProject(request, user_id, project_id):
+    project = Project.objects.get(pk=project_id)
+    user = User.objects.get(pk=user_id)
+    if(user not in project.users.all()):
+        messages.error(request, "L'utilisateur n'est pas dans le projet")
+    else:
+        project.users.remove(user)
+        messages.success(request, "L'utilisateur a bien été retiré du projet")
+    return redirect(reverse('projects:project', kwargs={'id':project_id}))

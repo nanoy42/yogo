@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load project_extra %}
+{% load bootstrap4 %}
 {% block content %}
 <h2>{{project.title}}</h2>
 <ul class="nav nav-tabs">
@@ -54,6 +56,11 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 <div id="div-members" style="display:block">
 <br>
 <h5>Ajouter un membre</h5>
+<form method="post" action="" class="form">
+	{% csrf_token %}
+	{% bootstrap_form addMemberForm %}
+	<button class="btn btn-outline-primary"><i class="fa fa-user-plus"></i> Ajouter le membre</button>
+</form>
 <hr>
 <h5>Liste des membres</h5>
 <table class="table table-striped">
@@ -68,10 +75,10 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 	<tbody>
 		{% for member in project.users.all %}
 		<tr>
-			<td>{{member.username}}</td>
+			<td>{{member.username}} {% if member == project.owner %}<i class="fa fa-star"></i>{% endif %}</td>
+			<td>{{taken_tasks|index:forloop.counter0}}</td>
 			<td></td>
-			<td></td>
-			<td><a class="btn btn-outline-danger" href="#"><i class="fa fa-times"></i> Retirer du projet</a> </td>
+			<td>{% if member != project.owner %}<a class="btn btn-outline-danger" href="{% url 'projects:deleteUserFromProject' project.pk member.pk %}"><i class="fa fa-times"></i> Retirer du projet</a>{% endif %}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
