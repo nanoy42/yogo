@@ -18,4 +18,4 @@ class addMemberForm(forms.Form):
         self.projectId = kwargs.pop('projectId')
         super(addMemberForm, self).__init__(*args, **kwargs)
         self.fields['member'].queryset = User.objects.exclude(pk__in=Project.objects.get(pk=self.projectId).users.all())
-    member = forms.ModelChoiceField(queryset=User.objects.all())
+    member = forms.ModelChoiceField(queryset=User.objects.all(), label="")

@@ -8,4 +8,7 @@ urlpatterns = [
     path('newproject', views.newProject, name="newproject"),
     path('project/<int:id>', views.project, name="project"),
     path('deleteUserFromProject/<int:project_id>/<int:user_id>', views.deleteUserFromProject, name="deleteUserFromProject"),
+    path('manageProjects', views.manageProjects, name="manageProjects"),
+    path('changeState/<int:projectId>', views.changeState, name="changeState"),
+    path('deleteProject/<int:projectId>/<str:nextUrl>', views.deleteProject, name="deleteProject"),
 ]

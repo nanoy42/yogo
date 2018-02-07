@@ -45,6 +45,7 @@ def project(request, id):
     for user in project.users.all():
         taken_tasks.append(project.task_set.filter(userAssigned=user).count())
     memberForm = addMemberForm(request.POST or None, projectId=id)
+    projectForm = ProjectForm(request.POST or None)
     if(memberForm.is_valid()):
         member = memberForm.cleaned_data['member']
         if member in project.users.all():
@@ -64,3 +65,28 @@ def deleteUserFromProject(request, user_id, project_id):
         project.users.remove(user)
         messages.success(request, "L'utilisateur a bien été retiré du projet")
     return redirect(reverse('projects:project', kwargs={'id':project_id}))
+
+
+def manageProjects(request):
+    projects = Project.objects.all()
+    return render(request, 'projects/manageProjects.html', {'projects': projects})
+
+def changeState(request, projectId):
+    project = Project.objects.get(pk=projectId)
+    if(project is not None):
+        project.active = 1 - project.active
+        project.save()
+        messages.success(request, 'Le statut du projet a bien été modifié')
+    else:
+        messages.error(request, 'Ce projet n\'existe pas')
+    return redirect(request.META.get('HTTP_REFERER','/'))
+
+def deleteProject(request, projectId, nextUrl):
+    project = Project.objects.get(pk=projectId)
+    if(project is not None):
+        project.delete()
+        messages.success(request, 'Le projet a bien été supprimé')
+    else:
+        messages.error(request, 'Ce projet n\'existe pas')
+    return redirect(nextUrl)
+
