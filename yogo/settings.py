@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import ldap
+from django_auth_ldap.config import LDAPSearch
 from django.contrib import messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -74,7 +76,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'yogo.wsgi.application'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'django_auth_ldap.backend.LDAPBackend'
+]
 
+# Configuration du LDAP
+
+AUTH_LDAP_SERVER_URI = "ldap://ldap.rezometz.org"
+AUTH_LDAP_BIND_DN = "CN=kanboard,OU=service-users,DC=ldap,DC=rezometz,DC=org"
+AUTH_LDAP_BIND_PASSWORD = "p0una.KH3CN9Q"
+AUTH_LDAP_USER_SEARCH = LDAPSearch("CN=utilisateurs,DC=ldap,DC=rezometz,DC=org", ldap.SCOPE_SUBTREE, "CN=%s")
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -108,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'UTC'
 

@@ -45,7 +45,7 @@ def project(request, id):
     for user in project.users.all():
         taken_tasks.append(project.task_set.filter(userAssigned=user).count())
     memberForm = addMemberForm(request.POST or None, projectId=id)
-    projectForm = ProjectForm(request.POST or None)
+    projectForm = ProjectForm(request.POST or None, instance=project)
     if(memberForm.is_valid()):
         member = memberForm.cleaned_data['member']
         if member in project.users.all():
@@ -53,7 +53,11 @@ def project(request, id):
         else:
             project.users.add(member)
             messages.success(request, "L'utilisateur a bien été ajouté")
-    return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': count_task_todo, 'doing': count_task_doing, 'done': count_task_done, 'taken_tasks': taken_tasks, 'addMemberForm': memberForm})
+    if(projectForm.is_valid()):
+        projectForm.save()
+        messages.success(request, 'Le projet a bien été modifié')
+        return redirect(reverse('projects:project', kwargs={'id':id}))
+    return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': count_task_todo, 'doing': count_task_doing, 'done': count_task_done, 'taken_tasks': taken_tasks, 'addMemberForm': memberForm, 'projectForm': projectForm})
 
 
 def deleteUserFromProject(request, user_id, project_id):

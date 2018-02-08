@@ -5,22 +5,22 @@
 <h2>{{project.title}}</h2>
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link active" href="#">Taches</a>
+    <a class="nav-link active" href="#" data-target="div_tasks" id="link_div_tasks">Taches</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Projet</a>
+    <a class="nav-link" href="#" data-target="div_project" id="link_div_project">Projet</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Gérer les membres</a>
+    <a class="nav-link" href="#" data-target="div_members" id="link_div_members">Gérer les membres</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Modifier le projet</a>
+    <a class="nav-link" href="#" data-target="div_update" id="link_div_update">Modifier le projet</a>
   </li>
 </ul>
-<div id="div-tasks" style="display:none">
+<div id="div_tasks" style="display:block">
 ajouter une tache + liste des taches réparties en colonne + gestion des taches
 </div>
-<div id="div-project" style="display:block">
+<div id="div_project" style="display:none">
 <table class="table table-striped">
   <tbody>
     <tr>
@@ -53,7 +53,7 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
   </tbody>
 </table>
 </div>
-<div id="div-members" style="display:block">
+<div id="div_members" style="display:none">
 <br>
 <h5>Ajouter un membre</h5>
 <form method="post" action="" class="form">
@@ -61,6 +61,9 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 	{% bootstrap_form addMemberForm %}
 	<button class="btn btn-outline-primary"><i class="fa fa-user-plus"></i> Ajouter le membre</button>
 </form>
+<hr>
+<h5>Passasse de créateur</h5>
+Désigner le nouveau créateur (chef de projet):
 <hr>
 <h5>Liste des membres</h5>
 <table class="table table-striped">
@@ -84,7 +87,30 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 	</tbody>
 </table>
 </div>
-<div id="div-update" style="display:none">
-
+<div id="div_update" style="display:none">
+<br>
+<h5>Modifier le projet</h5>
+<form action="" method="post" class="form">
+	{% csrf_token %}
+	{% bootstrap_form projectForm %}
+	<button class="btn btn-outline-primary"><i class="fa fa-pencil-alt"></i> Modifier</button>
+</form>
+<br>
+<br>
 </div>
+
+
+<script>
+		$(document).ready(function(){
+			prec = "div_tasks"
+			$(".nav-link").click(function(){
+				$("#" + prec).attr('style','display:none');
+				$("#link_" + prec).removeClass("active");
+				$("#" + $(this).attr('data-target')).attr('style','display:block');
+				$("#link_" + $(this).attr('data-target')).addClass('active');
+				prec = $(this).attr('data-target');
+			});
+		});
+	</script>
+
 {% endblock %}
