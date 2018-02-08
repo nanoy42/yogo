@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'projects',
     'preferences',
+    'yogo',
 ]
 
 MIDDLEWARE = [

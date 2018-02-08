@@ -11,4 +11,8 @@ urlpatterns = [
     path('manageProjects', views.manageProjects, name="manageProjects"),
     path('changeState/<int:projectId>', views.changeState, name="changeState"),
     path('deleteProject/<int:projectId>/<str:nextUrl>', views.deleteProject, name="deleteProject"),
+    path('manageTags', views.manageTags, name="manageTags"),
+    path('newTag', views.newTag, name="newTag"),
+    path('editTag/<int:tagId>', views.editTag, name="editTag"),
+    path('deleteTag/<int:tagId>', views.deleteTag, name="deleteTag")
 ]

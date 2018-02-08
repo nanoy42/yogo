@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Gérer les tags</h3>
+<a href="{% url 'projects:newTag' %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-star"></i> Créer un nouveau tag</a><br><br>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Nom</th>
+			<th>Aperçu</th>
+			<th>Administrer</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for tag in tags %}
+			<tr>
+				<td>{{tag.name}}</td>
+				<td><span class="badge badge-{{tag.color}}">{{tag.name}}</span></td>
+				<td><a href="{% url 'projects:editTag' tag.pk %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="{% url 'projects:deleteTag' tag.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

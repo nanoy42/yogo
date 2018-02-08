@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project
+from .models import Project, Tag
 from django.contrib.auth.models import User
 
 
@@ -19,3 +19,13 @@ class addMemberForm(forms.Form):
         super(addMemberForm, self).__init__(*args, **kwargs)
         self.fields['member'].queryset = User.objects.exclude(pk__in=Project.objects.get(pk=self.projectId).users.all())
     member = forms.ModelChoiceField(queryset=User.objects.all(), label="")
+
+
+class TagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = "__all__"
+        labels = {
+            'name': 'Nom du tag',
+            'color': 'Couleur',
+        }

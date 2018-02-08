@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import logout, login, authenticate
 from .forms import LoginForm
 from django.contrib import messages
+from django.contrib.auth.models import User
 
 
 def home(request):
@@ -26,3 +27,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect(reverse('home'))
+
+def manageUsers(request):
+    users = User.objects.all()
+    return render(request, 'yogo/manageUsers.html',{'users':users})

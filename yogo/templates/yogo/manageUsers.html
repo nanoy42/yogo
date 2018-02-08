@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Gérer les utilisateurs</h3>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Nom d'utilisateur</th>
+			<th>Role</th>
+			<th>Administrer</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for user in users %}
+			<tr>
+				<td>{{user.username}}</td>
+				<td></td>
+				<td></td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

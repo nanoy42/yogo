@@ -18,8 +18,27 @@ class Project(models.Model):
 
 
 class Tag(models.Model):
+    class Color:
+        BLUE = 'primary'
+        GREY = 'secondary'
+        GREEN = 'success'
+        RED = 'danger'
+        YELLOW = 'warning'
+        LIGHTBLUE = 'info'
+        WHITE = 'light'
+        BLACK = 'DARK'
+    COLOR_CHOICES = (
+        (Color.BLUE, 'Bleu'),
+        (Color.GREY, 'Gris'),
+        (Color.GREEN, 'Vert'),
+        (Color.RED, 'Rouge'),
+        (Color.YELLOW, 'Jaune'),
+        (Color.LIGHTBLUE, 'Bleu ciel'),
+        (Color.WHITE, 'Clair'),
+        (Color.BLACK, 'Sombre'),
+    )
     name = models.CharField(max_length=255)
-    color = models.CharField(max_length=6)
+    color = models.CharField(choices=COLOR_CHOICES, max_length=20)
 
     def __str__(self):
         return self.name

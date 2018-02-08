@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Task, Project
-from .forms import ProjectForm, addMemberForm
+from .models import Task, Project, Tag
+from .forms import ProjectForm, addMemberForm, TagForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 # Create your views here.
@@ -64,29 +64,73 @@ def deleteUserFromProject(request, user_id, project_id):
     else:
         project.users.remove(user)
         messages.success(request, "L'utilisateur a bien été retiré du projet")
-    return redirect(reverse('projects:project', kwargs={'id':project_id}))
+    return redirect(reverse('projects:project', kwargs={'id': project_id}))
 
 
 def manageProjects(request):
     projects = Project.objects.all()
     return render(request, 'projects/manageProjects.html', {'projects': projects})
 
+
 def changeState(request, projectId):
-    project = Project.objects.get(pk=projectId)
+    try:
+        project = Project.objects.get(pk=projectId)
+    except:
+        project = None
     if(project is not None):
         project.active = 1 - project.active
         project.save()
         messages.success(request, 'Le statut du projet a bien été modifié')
     else:
         messages.error(request, 'Ce projet n\'existe pas')
-    return redirect(request.META.get('HTTP_REFERER','/'))
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
 
 def deleteProject(request, projectId, nextUrl):
-    project = Project.objects.get(pk=projectId)
-    if(project is not None):
-        project.delete()
-        messages.success(request, 'Le projet a bien été supprimé')
-    else:
+    try:
+        project = Project.objects.get(pk=projectId)
+    except:
         messages.error(request, 'Ce projet n\'existe pas')
+        return redirect(reverse('home'))
+    project.delete()
+    messages.success(request, 'Le projet a bien été supprimé')
     return redirect(nextUrl)
 
+
+def manageTags(request):
+    tags = Tag.objects.all()
+    return render(request, 'projects/manageTags.html', {'tags': tags})
+
+
+def newTag(request):
+    form = TagForm(request.POST or None)
+    if(form.is_valid()):
+        form.save()
+        messages.success(request, 'Le tag a bien été créé')
+        return redirect(reverse('projects:manageTags'))
+    return render(request, 'form.html', {'form': form, 'title': 'Nouveau tag', 'bouton': 'Créer le tag', 'icon': 'star'})
+
+
+def editTag(request, tagId):
+    try:
+        tag = Tag.objects.get(pk=tagId)
+    except:
+        messages.error(request, 'Ce tag n\'existe pas')
+        return redirect(reverse('home'))
+    form = TagForm(request.POST or None, instance=tag)
+    if(form.is_valid()):
+        form.save()
+        messages.success(request, 'Le tag a bien été modifié')
+        return redirect(reverse('projects:manageTags'))
+    return render(request, 'form.html', {'form': form, 'title': 'Modification du tag ' + tag.name, 'bouton': 'Modifier', 'icon': 'pencil-alt'})
+
+
+def deleteTag(request, tagId):
+    try:
+        tag = Tag.objects.get(pk=tagId)
+    except:
+        messages.error(request, "Ce tag n'existe pas")
+        return redirect(reverse('home'))
+    tag.delete()
+    messages.success(request, "Le tag a bien été supprimé")
+    return redirect(reverse('projects:manageTags'))
