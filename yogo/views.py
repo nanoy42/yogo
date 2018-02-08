@@ -4,6 +4,7 @@ from django.contrib.auth import logout, login, authenticate
 from .forms import LoginForm
 from django.contrib import messages
 from django.contrib.auth.models import User
+from projects.models import Project
 
 
 def home(request):
@@ -31,3 +32,7 @@ def logout_view(request):
 def manageUsers(request):
     users = User.objects.all()
     return render(request, 'yogo/manageUsers.html',{'users':users})
+
+def profile(request):
+    createdProjects = Project.objects.filter(owner=request.user).count()
+    return render(request, 'yogo/profile.html', {'createdProjects':createdProjects})

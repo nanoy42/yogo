@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Mon profil</h3>
+Nom d'utilisateur : {{request.user}}<br>
+Adresse e-mail : {{request.user.email}}<br>
+Date d'inscription : {{request.user.date_joined | date:"d/m/Y"}}<br>
+Role : {% for group in request.user.groups.all %}{{group}}, {% endfor %}<br>
+Nombre de projets : {{request.user.membered_projects.count}}<br>
+Nombre de projets créés : {{createdProjects}} <br>
+Nombre de tâches : {{request.user.task_set.count}}<br>
+{% endblock %}
