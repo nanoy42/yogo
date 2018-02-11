@@ -11,9 +11,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-import ldap
-from django_auth_ldap.config import LDAPSearch
 from django.contrib import messages
+from yogo.local_settings import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -83,10 +82,6 @@ AUTHENTICATION_BACKENDS = [
 
 # Configuration du LDAP
 
-AUTH_LDAP_SERVER_URI = "ldap://ldap.rezometz.org"
-AUTH_LDAP_BIND_DN = "CN=kanboard,OU=service-users,DC=ldap,DC=rezometz,DC=org"
-AUTH_LDAP_BIND_PASSWORD = "p0una.KH3CN9Q"
-AUTH_LDAP_USER_SEARCH = LDAPSearch("CN=utilisateurs,DC=ldap,DC=rezometz,DC=org", ldap.SCOPE_SUBTREE, "CN=%s")
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -139,3 +134,15 @@ STATIC_URL = '/static/'
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
+############################## django-auth-ldap ##############################
+if DEBUG:
+    import logging, logging.handlers
+    logfile = "/tmp/django-ldap-debug.log"
+    my_logger = logging.getLogger('django_auth_ldap')
+    my_logger.setLevel(logging.DEBUG)
+
+    handler = logging.handlers.RotatingFileHandler(
+       logfile, maxBytes=1024 * 500, backupCount=5)
+
+    my_logger.addHandler(handler)
+############################ end django-auth-ldap ############################
