@@ -104,7 +104,7 @@ def changeState(request, pk):
 
 @login_required
 @can_edit_project
-def deleteProject(request, pk, nextUrl):
+def deleteProject(request, pk):
     try:
         project = Project.objects.get(pk=pk)
     except:
@@ -112,7 +112,7 @@ def deleteProject(request, pk, nextUrl):
         return redirect(reverse('home'))
     project.delete()
     messages.success(request, 'Le projet a bien été supprimé')
-    return redirect(nextUrl)
+    return redirect(request.GET.get('next', reverse('home')))
 
 
 @login_required
