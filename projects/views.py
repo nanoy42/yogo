@@ -5,7 +5,7 @@ from .forms import ProjectForm, addMemberForm, TagForm, TaskForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-# Create your views here.
+from yogo.acl import can_edit_project, admin_required, member_required
 
 
 @login_required
@@ -41,15 +41,16 @@ def newProject(request):
 
 
 @login_required
-def project(request, id):
-    project = Project.objects.get(pk=id)
+@member_required
+def project(request, pk):
+    project = Project.objects.get(pk=pk)
     task_todo = project.task_set.filter(status=Task.State.TODO)
     task_doing = project.task_set.filter(status=Task.State.DOING)
     task_done = project.task_set.filter(status=Task.State.DONE)
     taken_tasks = []
     for user in project.users.all():
         taken_tasks.append(project.task_set.filter(userAssigned=user).count())
-    memberForm = addMemberForm(request.POST or None, projectId=id)
+    memberForm = addMemberForm(request.POST or None, projectId=pk)
     projectForm = ProjectForm(request.POST or None, instance=project)
     if(memberForm.is_valid()):
         member = memberForm.cleaned_data['member']
@@ -66,27 +67,30 @@ def project(request, id):
 
 
 @login_required
-def deleteUserFromProject(request, user_id, project_id):
-    project = Project.objects.get(pk=project_id)
+@can_edit_project
+def deleteUserFromProject(request, pk, user_id):
+    project = Project.objects.get(pk=pk)
     user = User.objects.get(pk=user_id)
     if(user not in project.users.all()):
         messages.error(request, "L'utilisateur n'est pas dans le projet")
     else:
         project.users.remove(user)
         messages.success(request, "L'utilisateur a bien été retiré du projet")
-    return redirect(reverse('projects:project', kwargs={'id': project_id}))
+    return redirect(reverse('projects:project', kwargs={'id': pk}))
 
 
 @login_required
+@admin_required
 def manageProjects(request):
     projects = Project.objects.all()
     return render(request, 'projects/manageProjects.html', {'projects': projects})
 
 
 @login_required
-def changeState(request, projectId):
+@can_edit_project
+def changeState(request, pk):
     try:
-        project = Project.objects.get(pk=projectId)
+        project = Project.objects.get(pk=pk)
     except:
         project = None
     if(project is not None):
@@ -99,9 +103,10 @@ def changeState(request, projectId):
 
 
 @login_required
-def deleteProject(request, projectId, nextUrl):
+@can_edit_project
+def deleteProject(request, pk, nextUrl):
     try:
-        project = Project.objects.get(pk=projectId)
+        project = Project.objects.get(pk=pk)
     except:
         messages.error(request, 'Ce projet n\'existe pas')
         return redirect(reverse('home'))
@@ -111,12 +116,14 @@ def deleteProject(request, projectId, nextUrl):
 
 
 @login_required
+@admin_required
 def manageTags(request):
     tags = Tag.objects.all()
     return render(request, 'projects/manageTags.html', {'tags': tags})
 
 
 @login_required
+@admin_required
 def newTag(request):
     form = TagForm(request.POST or None)
     if(form.is_valid()):
@@ -127,6 +134,7 @@ def newTag(request):
 
 
 @login_required
+@admin_required
 def editTag(request, tagId):
     try:
         tag = Tag.objects.get(pk=tagId)
@@ -142,6 +150,7 @@ def editTag(request, tagId):
 
 
 @login_required
+@admin_required
 def deleteTag(request, tagId):
     try:
         tag = Tag.objects.get(pk=tagId)
@@ -154,9 +163,10 @@ def deleteTag(request, tagId):
 
 
 @login_required
-def newTask(request, projectId):
+@member_required
+def newTask(request, pk):
     active = 2
-    project = Project.objects.get(pk=projectId)
+    project = Project.objects.get(pk=pk)
     form = TaskForm(request.POST or None)
     if(form.is_valid()):
         pass

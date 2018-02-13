@@ -16,6 +16,12 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+    def is_member(self, user):
+        return user in self.users.all()
+
+    def is_owner(self, user):
+        return user == self.owner
+
 
 class Tag(models.Model):
     class Color:
