@@ -19,6 +19,52 @@
 </ul>
 <div id="div_tasks" style="display:block">
 ajouter une tache + liste des taches réparties en colonne + gestion des taches
+<a class="btn btn-outline-primary" href="{% url 'projects:newTask' project.pk %}"><i class="fa fa-star"></i> Ajouter une tâche</a>
+	<hr>
+	<div class="row">
+		<div class="col">
+			<h3>To do</h3>
+			{% for task in todo %}
+		<div class="card">
+			<div class="card-header">
+				{{task.title}}
+			</div>
+			<div class="card-body">
+				<p class="card-text">{{task.description}}</p>
+				Papsé par ... Ou bouton Paps
+				Tags
+			</div>
+			<div class="card-footer">
+				<a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a> <div class="btn-group" role="group"><a href="#" class="btn btn-outline-info btn-sm disabled"><</a><a href="{% url 'projects:changeTaskStatus' task.pk 'doing' %}" class="btn btn-outline-info btn-sm">></a></div>
+			</div>
+		</div>
+		{% endfor %}
+		</div>
+		<div class="col">
+			<h3>Doing</h3>
+			{% for task in doing %}
+	<div class="card">
+			<div class="card-header">
+				{{task.title}}
+			</div>
+			<div class="card-body">
+				<p class="card-text">{{task.description}}</p>
+				Papsé par ... Ou bouton Paps
+				Tags
+			</div>
+			<div class="card-footer">
+				<a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a> <div class="btn-group" role="group"><a href="{% url 'projects:changeTaskStatus' task.pk 'todo' %}" class="btn btn-outline-info btn-sm"><</a><a href="{% url 'projects:changeTaskStatus' task.pk 'done' %}" class="btn btn-outline-info btn-sm">></a></div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+	<div class="col">
+		<h3>Done</h3>
+		{% for task in done %}
+
+		{% endfor %}
+	</div>
+</div>
 </div>
 <div id="div_project" style="display:none">
 <table class="table table-striped">
@@ -43,13 +89,13 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 		<td>Nombre de tâches</td>
 		<td>{{project.task_set.count}}</td>
 		<td>Nombre de tâches To Do</td>
-		<td>{{todo}}</td>
+		<td>{{todo.count}}</td>
 	</tr>
 	<tr>
 		<td>Nombre de tâches Doing</td>
-		<td>{{doing}}</td>
+		<td>{{doing.count}}</td>
 		<td>Nombre de tâches Done</td>
-		<td>{{done}}</td>
+		<td>{{done.count}}</td>
   </tbody>
 </table>
 </div>

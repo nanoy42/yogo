@@ -1,18 +1,21 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import Task, Project, Tag
-from .forms import ProjectForm, addMemberForm, TagForm
+from .forms import ProjectForm, addMemberForm, TagForm, TaskForm
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
+@login_required
 def myprojects(request):
     projects = request.user.membered_projects.all()
     active = 2
     return render(request, 'projects/myprojects.html', {'projects': projects, 'active': active})
 
 
+@login_required
 def mytasks(request):
     active = 3
     todo_tasks = Task.objects.filter(
@@ -24,6 +27,7 @@ def mytasks(request):
     return render(request, 'projects/mytasks.html', {'active': active, 'todo': todo_tasks, 'doing': doing_tasks, 'done': done_tasks})
 
 
+@login_required
 def newProject(request):
     active = 2
     form = ProjectForm(request.POST or None)
@@ -36,11 +40,12 @@ def newProject(request):
     return render(request, 'form.html', {'form': form, 'active': active, 'title': "Nouveau projet", 'bouton': 'Créer le projet', 'icon': 'star'})
 
 
+@login_required
 def project(request, id):
     project = Project.objects.get(pk=id)
-    count_task_todo = project.task_set.filter(status=Task.State.TODO).count()
-    count_task_doing = project.task_set.filter(status=Task.State.DOING).count()
-    count_task_done = project.task_set.filter(status=Task.State.DONE).count()
+    task_todo = project.task_set.filter(status=Task.State.TODO)
+    task_doing = project.task_set.filter(status=Task.State.DOING)
+    task_done = project.task_set.filter(status=Task.State.DONE)
     taken_tasks = []
     for user in project.users.all():
         taken_tasks.append(project.task_set.filter(userAssigned=user).count())
@@ -57,9 +62,10 @@ def project(request, id):
         projectForm.save()
         messages.success(request, 'Le projet a bien été modifié')
         return redirect(reverse('projects:project', kwargs={'id':id}))
-    return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': count_task_todo, 'doing': count_task_doing, 'done': count_task_done, 'taken_tasks': taken_tasks, 'addMemberForm': memberForm, 'projectForm': projectForm})
+    return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': task_todo, 'doing': task_doing, 'done': task_done, 'taken_tasks': taken_tasks, 'addMemberForm': memberForm, 'projectForm': projectForm})
 
 
+@login_required
 def deleteUserFromProject(request, user_id, project_id):
     project = Project.objects.get(pk=project_id)
     user = User.objects.get(pk=user_id)
@@ -71,11 +77,13 @@ def deleteUserFromProject(request, user_id, project_id):
     return redirect(reverse('projects:project', kwargs={'id': project_id}))
 
 
+@login_required
 def manageProjects(request):
     projects = Project.objects.all()
     return render(request, 'projects/manageProjects.html', {'projects': projects})
 
 
+@login_required
 def changeState(request, projectId):
     try:
         project = Project.objects.get(pk=projectId)
@@ -90,6 +98,7 @@ def changeState(request, projectId):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
+@login_required
 def deleteProject(request, projectId, nextUrl):
     try:
         project = Project.objects.get(pk=projectId)
@@ -101,11 +110,13 @@ def deleteProject(request, projectId, nextUrl):
     return redirect(nextUrl)
 
 
+@login_required
 def manageTags(request):
     tags = Tag.objects.all()
     return render(request, 'projects/manageTags.html', {'tags': tags})
 
 
+@login_required
 def newTag(request):
     form = TagForm(request.POST or None)
     if(form.is_valid()):
@@ -115,6 +126,7 @@ def newTag(request):
     return render(request, 'form.html', {'form': form, 'title': 'Nouveau tag', 'bouton': 'Créer le tag', 'icon': 'star'})
 
 
+@login_required
 def editTag(request, tagId):
     try:
         tag = Tag.objects.get(pk=tagId)
@@ -129,6 +141,7 @@ def editTag(request, tagId):
     return render(request, 'form.html', {'form': form, 'title': 'Modification du tag ' + tag.name, 'bouton': 'Modifier', 'icon': 'pencil-alt'})
 
 
+@login_required
 def deleteTag(request, tagId):
     try:
         tag = Tag.objects.get(pk=tagId)
@@ -138,3 +151,31 @@ def deleteTag(request, tagId):
     tag.delete()
     messages.success(request, "Le tag a bien été supprimé")
     return redirect(reverse('projects:manageTags'))
+
+
+@login_required
+def newTask(request, projectId):
+    active = 2
+    project = Project.objects.get(pk=projectId)
+    form = TaskForm(request.POST or None)
+    if(form.is_valid()):
+        pass
+    return render(request, 'form.html', {'active': active, 'form': form, 'icon': 'star', 'bouton': 'Créer la tâche', 'title': 'Nouvelle tâche de '+project.title})
+
+
+@login_required
+def changeTaskStatus(request, taskId, newStatus):
+    cor = {'todo': Task.State.TODO, 'doing': Task.State.DOING, 'done': Task.State.DONE}
+    try:
+        task = Task.objects.get(pk=taskId)
+    except:
+        messages.error(request, "La tâche n'existe pas")
+        return redirect(reverse('home'))
+    try:
+        task.status = cor[newStatus]
+    except:
+        messages.error(request, "Le status demandé n'existe pas")
+        return redirect(reverse('home'))
+    task.save()
+    messages.success(request, "La tâche est passée en " + newStatus)
+    return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))

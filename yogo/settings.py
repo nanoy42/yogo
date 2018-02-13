@@ -133,6 +133,8 @@ STATIC_URL = '/static/'
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
+
+LOGIN_URL = 'login'
 ############################## django-auth-ldap ##############################
 if DEBUG:
     import logging, logging.handlers

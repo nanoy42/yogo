@@ -14,5 +14,7 @@ urlpatterns = [
     path('manageTags', views.manageTags, name="manageTags"),
     path('newTag', views.newTag, name="newTag"),
     path('editTag/<int:tagId>', views.editTag, name="editTag"),
-    path('deleteTag/<int:tagId>', views.deleteTag, name="deleteTag")
+    path('deleteTag/<int:tagId>', views.deleteTag, name="deleteTag"),
+    path('newTask/<int:projectId>', views.newTask, name="newTask"),
+    path('changeTaskStatus/<int:taskId>/<str:newStatus>', views.changeTaskStatus, name="changeTaskStatus"),
 ]

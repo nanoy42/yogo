@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project, Tag
+from .models import Project, Tag, Task
 from django.contrib.auth.models import User
 
 
@@ -28,4 +28,16 @@ class TagForm(forms.ModelForm):
         labels = {
             'name': 'Nom du tag',
             'color': 'Couleur',
+        }
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        exclude = ('project',)
+        labels = {
+            'title': 'Titre',
+            'userAssigned': 'Qui dit paps ?',
+            'status': 'Statut',
+            'prerequisites': 'Prérequis',
+            'active': 'Actif'
         }
