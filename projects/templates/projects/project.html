@@ -5,23 +5,23 @@
 <h2>{{project.title}}</h2>
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link active" href="#" data-target="div_tasks" id="link_div_tasks">Taches</a>
+    <a class="nav-link active" href="#" data-target="div_tasks" id="link_div_tasks"><i class="fas fa-tasks"></i> Taches</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#" data-target="div_project" id="link_div_project">Projet</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" data-target="div_members" id="link_div_members">Gérer les membres</a>
+    <a class="nav-link" href="#" data-target="div_members" id="link_div_members"><i class="fas fa-users"></i> Gérer les membres</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" data-target="div_update" id="link_div_update">Modifier le projet</a>
+    <a class="nav-link" href="#" data-target="div_update" id="link_div_update"><i class="fas fa-pencil-alt"></i> Modifier le projet</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" data-target="div_tags" id="link_div_tags"><i class="fa fa-tags"></i>Gérer les tags</a>
+    <a class="nav-link" href="#" data-target="div_tags" id="link_div_tags"><i class="fas fa-tags"></i> Gérer les tags</a>
   </li>
 </ul>
 <div id="div_tasks" style="display:block">
-ajouter une tache + liste des taches réparties en colonne + gestion des taches
+<br />
 <a class="btn btn-outline-primary" href="{% url 'projects:newTask' project.pk %}"><i class="fa fa-star"></i> Ajouter une tâche</a>
 <hr>
 {% include "projects/display_tasks.html" %}
@@ -30,31 +30,31 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 <table class="table table-striped">
   <tbody>
     <tr>
-      <td colspan="2" width="50%">Description</td>
+      <th colspan="2" width="50%">Description</th>
 	  <td colspan="2" width="50%">{{project.description}}</td>
     </tr>
     <tr>
-      <td>Création</td>
+      <th>Création</th>
 	  <td>{{project.creationDate}}</td>
-      <td>Créateur</td>
+      <th>Créateur</th>
 	  <td>{{project.owner}}</td>
     </tr>
     <tr>
-      <td>Projet actif</td>
+      <th>Projet actif</th>
 	  <td>{% if project.active %}Oui{% else %}Non{% endif %}</td>
-      <td>Nombre de membres</td>
+      <th>Nombre de membres</th>
 	  <td>{{project.users.count}}</td>
     </tr>
 	<tr>
-		<td>Nombre de tâches</td>
+		<th>Nombre de tâches</th>
 		<td>{{project.task_set.count}}</td>
-		<td>Nombre de tâches To Do</td>
+		<th>Nombre de tâches To Do</th>
 		<td>{{todo.count}}</td>
 	</tr>
 	<tr>
-		<td>Nombre de tâches Doing</td>
+		<th>Nombre de tâches Doing</th>
 		<td>{{doing.count}}</td>
-		<td>Nombre de tâches Done</td>
+		<th>Nombre de tâches Done</th>
 		<td>{{done.count}}</td>
   </tbody>
 </table>
