@@ -36,7 +36,8 @@ def newProject(request):
         form.save()
         form.instance.users.add(request.user)
         form.save()
-        return redirect(reverse('home'))
+        messages.success(request, "Projet créé.")
+        return redirect(reverse('projects:project', kwargs={'pk':form.instance.pk}))
     return render(request, 'form.html', {'form': form, 'active': active, 'title': "Nouveau projet", 'bouton': 'Créer le projet', 'icon': 'star'})
 
 
