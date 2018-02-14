@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'projects',
     'yogo',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'yogo.urls'
@@ -78,6 +80,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'django_auth_ldap.backend.LDAPBackend'
 ]
+
+INTERNAL_IPS = ['127.0.0.1']
 
 # Configuration du LDAP
 

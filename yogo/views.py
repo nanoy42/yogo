@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import logout, login, authenticate
 from .forms import LoginForm
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from projects.models import Project
 
 from yogo.acl import admin_required
@@ -34,8 +34,51 @@ def logout_view(request):
 @admin_required
 def manageUsers(request):
     users = User.objects.all()
-    return render(request, 'yogo/manageUsers.html',{'users':users})
+    admin, _ = Group.objects.get_or_create(name="admin")
+    return render(request, 'yogo/manageUsers.html',{'users': users, 'admin':admin})
 
 def profile(request):
     createdProjects = Project.objects.filter(owner=request.user).count()
     return render(request, 'yogo/profile.html', {'createdProjects':createdProjects})
+
+@admin_required
+def add_admin(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+    except:
+        messages.error(request, "L'utilisateur n'existe pas")
+        return redirect(reverse('home'))
+    admin, _ = Group.objects.get_or_create(name="admin")
+    if(admin in user.groups.all()):
+        messages.error(request, "L'utilisateur est dejà admin")
+        return redirect(reverse('home'))
+    user.groups.add(admin)
+    messages.success(request, user.username + " a été passé administrateur")
+    return redirect(reverse('manageUsers'))
+
+@admin_required
+def remove_admin(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+    except:
+        messages.error(request, "L'utilisateur n'existe pas")
+        return redirect(reverse('home'))
+    admin, _ = Group.objects.get_or_create(name="admin")
+    if(admin not in user.groups.all()):
+        messages.error(request, "L'utilisateur n'est pas admin")
+        return redirect(reverse('home'))
+    user.groups.remove(admin)
+    messages.success(request, "Les droits admin ont bien été retirés")
+    return redirect(reverse('manageUsers'))
+
+
+@admin_required
+def remove_user(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+    except:
+        messages.error(request, "L'utilisateur n'existe pas")
+        return redirect(reverse('home'))
+    user.delete()
+    messages.success(request, "L'utilisateur a été supprimé")
+    return redirect(reverse('manageUsers'))

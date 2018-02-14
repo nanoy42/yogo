@@ -5,16 +5,16 @@
 	<thead>
 		<tr>
 			<th>Nom d'utilisateur</th>
-			<th>Role</th>
-			<th>Administrer</th>
+			<th>Changer le statut</th>
+			<th>Supprimer</th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for user in users %}
 			<tr>
-				<td>{{user.username}}</td>
-				<td></td>
-				<td></td>
+				<td>{{user.username}} {% if admin in user.groups.all %}<i class="fa fa-star"></i>{% endif %}</td>
+				<td>{% if admin not in user.groups.all %}<a href="{% url 'addAdmin' user.pk %}" class="btn btn-outline-info btn-sm"><i class="fa fa-star"></i> Nommer administrateur</a>{% else %}<a href="{% url 'removeAdmin' user.pk %}" class="btn btn-outline-warning btn-sm"><i class="fa fa-times"></i> Retirer les droits admin</a>{% endif %}</td>
+				<td><a href="{% url 'removeUser' user.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
 			</tr>
 		{% endfor %}
 	</tbody>
