@@ -63,7 +63,7 @@ def project(request, pk):
     if(projectForm.is_valid()):
         projectForm.save()
         messages.success(request, 'Le projet a bien été modifié')
-        return redirect(reverse('projects:project', kwargs={'id':id}))
+        return redirect(reverse('projects:project', kwargs={'pk':pk}))
     return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': task_todo, 'doing': task_doing, 'done': task_done, 'taken_tasks': taken_tasks, 'addMemberForm': memberForm, 'projectForm': projectForm})
 
 
@@ -77,7 +77,7 @@ def deleteUserFromProject(request, pk, user_id):
     else:
         project.users.remove(user)
         messages.success(request, "L'utilisateur a bien été retiré du projet")
-    return redirect(reverse('projects:project', kwargs={'id': pk}))
+    return redirect(reverse('projects:project', kwargs={'pk': pk}))
 
 
 @login_required
