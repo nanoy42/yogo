@@ -179,3 +179,45 @@ def changeTaskStatus(request, taskId, newStatus):
     task.save()
     messages.success(request, "La tâche est passée en " + newStatus)
     return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+
+
+@login_required
+def deleteTask(request, taskId):
+    try:
+        task = Task.objects.get(pk=taskId)
+    except:
+        messages.error(request, "La tâche n'existe pas")
+        return redirect(reverse('home'))
+    task.delete()
+    messages.success(request, "La tâche a bien été supprimée")
+    return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+
+
+@login_required
+def paps(request, taskId):
+    try:
+        task = Task.objects.get(pk=taskId)
+    except:
+        messages.error(request, "La tâche n'existe pas")
+        return redirect(reverse('home'))
+    task.userAssigned = request.user
+    task.save()
+    messages.success(request, "Vous avez paspé la tâche. Au boulot !")
+    return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+
+
+@login_required
+def depaps(request, taskId):
+    try:
+        task = Task.objects.get(pk=taskId)
+    except:
+        messages.error(request, "La tâche n'existe pas")
+        return redirect(reverse('home'))
+    if(task.userAssigned != request.user):
+        messages.error(request, "Vous ne pouvez pas depaps une tâche que vous n'avez pas papsée")
+        return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+    else:
+        task.userAssigned = None
+        task.save()
+        messages.success(request, "Depaps réussi (flemmard)")
+        return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
