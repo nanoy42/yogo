@@ -1,1 +1,20 @@
 {% extends 'base.html' %}
+{% block content %}
+<div class="text-center">
+<h1>YOGO</h1>
+<p>YOGO est un site de gestion de projets. </p>
+<p>Il vous permet de travailler en équipe en vous répartissant les tâches.<p>
+<br />
+{% if user.is_authenticated %}
+<div class=".btn-group">
+    <a type="button" class="btn btn-success btn-lg" href="{% url "projects:newproject" %}"><i class="fas fa-plus"></i> Créer un nouveau projet</a>
+    <a type="button" class="btn btn-primary btn-lg" href="{% url "projects:myprojects" %}"><i class="fa fa-paper-plane"></i> Accéder à mes projets</a>
+</div>
+{% else %}
+<button type="button" class="btn btn-success btn-lg"><i class="fas fa-sign-in"></i> Se connecter</button>
+{% endif %}
+<br />
+<br />
+<p>YOGO vous est offert avec des <i class="fas fa-heart"></i> par Klafyvel et Yoann</p>
+</div>
+{% endblock %}

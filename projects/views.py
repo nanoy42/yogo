@@ -163,9 +163,11 @@ def deleteTag(request, pk, tagId):
 def newTask(request, pk):
     active = 2
     project = Project.objects.get(pk=pk)
-    form = TaskForm(request.POST or None)
+    form = TaskForm(project, request.POST or None)
     if(form.is_valid()):
-        pass
+        form.save()
+        messages.success(request, 'La tâche a été créée.')
+        return redirect(reverse('projects:project', kwargs={"pk":pk}))
     return render(request, 'form.html', {'active': active, 'form': form, 'icon': 'star', 'bouton': 'Créer la tâche', 'title': 'Nouvelle tâche de '+project.title})
 
 
@@ -190,7 +192,7 @@ def changeTaskStatus(request, pk, taskId, newStatus):
 
 
 @login_required
-def deleteTask(request, taskId, nextUrl):
+def deleteTask(request, taskId):
     try:
         task = Task.objects.get(pk=taskId)
     except:
@@ -198,10 +200,11 @@ def deleteTask(request, taskId, nextUrl):
         return redirect(reverse('home'))
     task.delete()
     messages.success(request, "La tâche a bien été supprimée")
-    if(nextUrl == "project"):
-        return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
-    else:
-        return redirect(reverse('projects:'+nextUrl))
+    next_url = request.GET.get(
+        'next',
+        reverse('projects:project', kwargs={'pk':task.project.pk})
+    )
+    return redirect(next_url)
 
 
 @login_required
@@ -214,24 +217,25 @@ def paps(request, taskId):
     task.userAssigned = request.user
     task.save()
     messages.success(request, "Vous avez paspé la tâche. Au boulot !")
-    return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+    return redirect(reverse('projects:project', kwargs={'pk': task.project.pk}))
 
 
 @login_required
-def depaps(request, taskId, nextUrl):
+def depaps(request, taskId):
     try:
         task = Task.objects.get(pk=taskId)
     except:
         messages.error(request, "La tâche n'existe pas")
-        return redirect(reverse('home'))
+        return redirect(reverse('shome'))
     if(task.userAssigned != request.user):
         messages.error(request, "Vous ne pouvez pas depaps une tâche que vous n'avez pas papsée")
-        return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+        return redirect(reverse('projects:project', kwargs={'pk': task.project.pk}))
     else:
         task.userAssigned = None
         task.save()
         messages.success(request, "Depaps réussi (flemmard)")
-        if(nextUrl == "project"):
-            return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
-        else:
-            return redirect(reverse('projects:'+nextUrl))
+        next_url = request.GET.get(
+            'next',
+            reverse('projects:project', kwargs={'pk':task.project.pk})
+        )
+        return redirect(next_url)

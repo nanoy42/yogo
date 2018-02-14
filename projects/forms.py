@@ -41,3 +41,7 @@ class TaskForm(forms.ModelForm):
             'prerequisites': 'Prérequis',
             'active': 'Actif'
         }
+    def __init__(self, project, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.instance.project = project
+        self.fields['tags'].queryset = project.tag_set.all()

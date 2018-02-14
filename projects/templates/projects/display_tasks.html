@@ -1,24 +1,36 @@
 <div class="row">
     <div class="col">
         <h3>To do</h3>
+        {% if todo %}
         {% for task in todo %}
             {% include "projects/task.html" %}
             <br>
         {% endfor %}
+        {% else %}
+        <p>Rien !</p>
+        {% endif %}
     </div>
     <div class="col">
         <h3>Doing</h3>
+        {% if doing %}
         {% for task in doing %}
             {% include "projects/task.html" %}
             <br>
         {% endfor %}
+        {% else %}
+        <p>Rien !</p>
+        {% endif %}
     </div>
     <div class="col">
         <h3>Done</h3>
+        {% if done %}
         {% for task in done %}
             {% include "projects/task.html" %}
             <br>
         {% endfor %}
+        {% else %}
+        <p>Rien !</p>
+        {% endif %}
     </div>
 </div>
 
