@@ -170,7 +170,8 @@ def newTask(request, pk):
 
 
 @login_required
-def changeTaskStatus(request, taskId, newStatus):
+@can_edit_project
+def changeTaskStatus(request, pk, taskId, newStatus):
     cor = {'todo': Task.State.TODO, 'doing': Task.State.DOING, 'done': Task.State.DONE}
     try:
         task = Task.objects.get(pk=taskId)
@@ -184,7 +185,7 @@ def changeTaskStatus(request, taskId, newStatus):
         return redirect(reverse('home'))
     task.save()
     messages.success(request, "La tâche est passée en " + newStatus)
-    return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+    return redirect(reverse('projects:project', kwargs={'pk': pk}))
 
 
 @login_required
