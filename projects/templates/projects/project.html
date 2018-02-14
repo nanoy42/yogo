@@ -35,7 +35,7 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 				<a href="{% url 'projects:paps' task.pk %}" class="btn btn-outline-warning btn-sm">Paps</a>
 				{% else %}
 					{% if task.userAssigned == request.user %}
-					Papsée par vous (<a href="{% url 'projects:depaps' task.pk %}">Depaps</a>)
+					Papsée par vous (<a href="{% url 'projects:depaps' task.pk 'project' %}">Depaps</a>)
 					{% else %}
 					Papsée par {{task.userAssigned}}
 					{% endif %}
@@ -46,7 +46,7 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 				{% endfor %}
 			</div>
 			<div class="card-footer">
-				<a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="{% url 'projects:deleteTask' task.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a> <div class="btn-group" role="group"><a href="#" class="btn btn-outline-info btn-sm disabled"><</a><a href="{% url 'projects:changeTaskStatus' task.pk 'doing' %}" class="btn btn-outline-info btn-sm">></a></div>
+				<a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="{% url 'projects:deleteTask' task.pk 'project' %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a> <div class="btn-group" role="group"><a href="#" class="btn btn-outline-info btn-sm disabled"><</a><a href="{% url 'projects:changeTaskStatus' task.pk 'doing' 'project'%}" class="btn btn-outline-info btn-sm">></a></div>
 			</div>
 		</div>
 		<br>
@@ -65,7 +65,7 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 				Tags
 			</div>
 			<div class="card-footer">
-				<a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="{% url 'projects:deleteTask' task.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a> <div class="btn-group" role="group"><a href="{% url 'projects:changeTaskStatus' task.pk 'todo' %}" class="btn btn-outline-info btn-sm"><</a><a href="{% url 'projects:changeTaskStatus' task.pk 'done' %}" class="btn btn-outline-info btn-sm">></a></div>
+				<a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="{% url 'projects:deleteTask' task.pk 'project'%}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a> <div class="btn-group" role="group"><a href="{% url 'projects:changeTaskStatus' task.pk 'todo' 'project'%}" class="btn btn-outline-info btn-sm"><</a><a href="{% url 'projects:changeTaskStatus' task.pk 'done' 'project'%}" class="btn btn-outline-info btn-sm">></a></div>
 			</div>
 		</div>
 		<br>
@@ -84,7 +84,7 @@ ajouter une tache + liste des taches réparties en colonne + gestion des taches
 				Tags
 			</div>
 			<div class="card-footer">
-				<a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="{% url 'projects:deleteTask' task.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a> <div class="btn-group" role="group"><a href="{% url 'projects:changeTaskStatus' task.pk 'doing' %}" class="btn btn-outline-info btn-sm"><</a><a href="#" class="btn btn-outline-info btn-sm disabled">></a></div>
+				<a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="{% url 'projects:deleteTask' task.pk 'project'%}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a> <div class="btn-group" role="group"><a href="{% url 'projects:changeTaskStatus' task.pk 'doing' 'project'%}" class="btn btn-outline-info btn-sm"><</a><a href="#" class="btn btn-outline-info btn-sm disabled">></a></div>
 			</div>
 		</div>
 		<br>

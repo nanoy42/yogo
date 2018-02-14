@@ -27,8 +27,8 @@
     <tr>
 		<td><a href="{% url 'projects:project' task.project.pk %}">{{task.project}}</a></td>
 		<td><a href="#">{{task.title}}</a></td>
-		<td><a href="{% url 'projects:changeTaskStatus' task.pk 'done' %}" class="btn btn-outline-success btn-sm"><i class="fa fa-check-circle"></i> Done</a> <a href="{% url 'projects:changeTaskStatus' task.pk 'todo' %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-times-circle"></i> To Do</a></td>
-		<td><a href="{% url 'projects:depaps' task.pk %}" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</td>
+		<td><a href="{% url 'projects:changeTaskStatus' task.pk 'done' 'mytasks'%}" class="btn btn-outline-success btn-sm"><i class="fa fa-check-circle"></i> Done</a> <a href="{% url 'projects:changeTaskStatus' task.pk 'todo' 'mytasks'%}" class="btn btn-outline-danger btn-sm"><i class="fa fa-times-circle"></i> To Do</a></td>
+		<td><a href="{% url 'projects:depaps' task.pk 'mytasks'%}" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
     </tr>
 	{% endfor %}
   </tbody>
@@ -50,7 +50,7 @@
 		<td><a href="{% url 'projects:project' task.project.pk %}">{{task.project}}</a></td>
 		<td><a href="#">{{task.title}}</a></td>
 		<td><a href="#" class="btn btn-outline-info btn-sm"><i class="fa fa-cogs"></i> Doing</a> <a href="#" class="btn btn-outline-success btn-sm"><i class="fa fa-check-circle"></i> Done</a></td>
-		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</td>
+		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
     </tr>
 	{% endfor %}
   </tbody>
@@ -73,7 +73,7 @@
 		<td><a href="{% url 'projects:project' task.project.pk %}">{{task.project}}</a></td>
 		<td><a href="#">{{task.title}}</a></td>
 		<td><a href="#" class="btn btn-outline-info btn-sm"><i class="fa fa-cogs"></i> Doing</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-times-circle"></i> To Do</a></td>
-		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</td>
+		<td><a href="#" class="btn btn-outline-warning btn-sm"><i class="fa fa-ban"></i> Depaps</a> <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
     </tr>
 	{% endfor %}
   </tbody>
