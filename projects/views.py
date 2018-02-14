@@ -185,11 +185,12 @@ def changeTaskStatus(request, pk, taskId, newStatus):
         return redirect(reverse('home'))
     task.save()
     messages.success(request, "La tâche est passée en " + newStatus)
-    return redirect(reverse('projects:project', kwargs={'pk': pk}))
+    url_next = request.GET.get('next', reverse('projects:project', kwargs={'pk': pk}))
+    return redirect(url_next)
 
 
 @login_required
-def deleteTask(request, taskId):
+def deleteTask(request, taskId, nextUrl):
     try:
         task = Task.objects.get(pk=taskId)
     except:
@@ -197,7 +198,10 @@ def deleteTask(request, taskId):
         return redirect(reverse('home'))
     task.delete()
     messages.success(request, "La tâche a bien été supprimée")
-    return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+    if(nextUrl == "project"):
+        return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+    else:
+        return redirect(reverse('projects:'+nextUrl))
 
 
 @login_required
@@ -214,7 +218,7 @@ def paps(request, taskId):
 
 
 @login_required
-def depaps(request, taskId):
+def depaps(request, taskId, nextUrl):
     try:
         task = Task.objects.get(pk=taskId)
     except:
@@ -227,4 +231,7 @@ def depaps(request, taskId):
         task.userAssigned = None
         task.save()
         messages.success(request, "Depaps réussi (flemmard)")
-        return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+        if(nextUrl == "project"):
+            return redirect(reverse('projects:project', kwargs={'id': task.project.pk}))
+        else:
+            return redirect(reverse('projects:'+nextUrl))
