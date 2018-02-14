@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .models import Task, Project, Tag
 from .forms import ProjectForm, addMemberForm, TagForm, TaskForm
@@ -116,26 +116,21 @@ def deleteProject(request, pk):
 
 
 @login_required
-@admin_required
-def manageTags(request):
-    tags = Tag.objects.all()
-    return render(request, 'projects/manageTags.html', {'tags': tags})
-
-
-@login_required
-@admin_required
-def newTag(request):
+@can_edit_project
+def newTag(request, pk):
     form = TagForm(request.POST or None)
+    project = get_object_or_404(Project, pk=pk)
     if(form.is_valid()):
+        form.instance.project = project
         form.save()
         messages.success(request, 'Le tag a bien été créé')
-        return redirect(reverse('projects:manageTags'))
+        return redirect(reverse('projects:project', kwargs={"pk":pk}))
     return render(request, 'form.html', {'form': form, 'title': 'Nouveau tag', 'bouton': 'Créer le tag', 'icon': 'star'})
 
 
 @login_required
-@admin_required
-def editTag(request, tagId):
+@can_edit_project
+def editTag(request, pk, tagId):
     try:
         tag = Tag.objects.get(pk=tagId)
     except:
@@ -150,8 +145,8 @@ def editTag(request, tagId):
 
 
 @login_required
-@admin_required
-def deleteTag(request, tagId):
+@can_edit_project
+def deleteTag(request, pk, tagId):
     try:
         tag = Tag.objects.get(pk=tagId)
     except:

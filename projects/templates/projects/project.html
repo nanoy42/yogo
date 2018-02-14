@@ -16,6 +16,9 @@
   <li class="nav-item">
     <a class="nav-link" href="#" data-target="div_update" id="link_div_update">Modifier le projet</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#" data-target="div_tags" id="link_div_tags"><i class="fa fa-tags"></i>Gérer les tags</a>
+  </li>
 </ul>
 <div id="div_tasks" style="display:block">
 ajouter une tache + liste des taches réparties en colonne + gestion des taches
@@ -144,7 +147,9 @@ Désigner le nouveau créateur (chef de projet):
 <br>
 <br>
 </div>
-
+<div id="div_tags" style="display:none">
+	{% include "projects/manageTags.html" %}
+</div>
 
 <script>
 		$(document).ready(function(){

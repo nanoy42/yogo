@@ -45,6 +45,7 @@ class Tag(models.Model):
     )
     name = models.CharField(max_length=255)
     color = models.CharField(choices=COLOR_CHOICES, max_length=20)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

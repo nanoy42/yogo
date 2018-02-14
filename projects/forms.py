@@ -24,7 +24,7 @@ class addMemberForm(forms.Form):
 class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
-        fields = "__all__"
+        fields = ['name', 'color']
         labels = {
             'name': 'Nom du tag',
             'color': 'Couleur',
