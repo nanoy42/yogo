@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from projects.models import Project
 
+from yogo.acl import admin_required
+
 
 def home(request):
     active = 1
@@ -29,6 +31,7 @@ def logout_view(request):
     logout(request)
     return redirect(reverse('home'))
 
+@admin_required
 def manageUsers(request):
     users = User.objects.all()
     return render(request, 'yogo/manageUsers.html',{'users':users})
