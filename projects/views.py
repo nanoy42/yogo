@@ -43,7 +43,7 @@ def newProject(request):
 
 @login_required
 @member_required
-def project(request, pk):
+def project(request, pk, project_form=None, member_form=None):
     project = Project.objects.get(pk=pk)
     task_todo = project.task_set.filter(status=Task.State.TODO)
     task_doing = project.task_set.filter(status=Task.State.DOING)
@@ -53,18 +53,36 @@ def project(request, pk):
         taken_tasks.append(project.task_set.filter(userAssigned=user).count())
     memberForm = addMemberForm(request.POST or None, projectId=pk)
     projectForm = ProjectForm(request.POST or None, instance=project)
-    if(memberForm.is_valid()):
-        member = memberForm.cleaned_data['member']
+    return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': task_todo, 'doing': task_doing, 'done': task_done, 'taken_tasks': taken_tasks, 'addMemberForm': memberForm, 'projectForm': projectForm})
+
+
+@login_required
+@can_edit_project
+def update_project_info(request, pk):
+    project = Project.objects.get(pk=pk)
+    project_form = ProjectForm(request.POST or None, instance=project)
+    if project_form.is_valid():
+        project_form.save()
+        messages.success(request, 'Le projet a bien été modifié')
+        return redirect(reverse('projects:project', kwargs={'pk':pk}))
+    messages.error(request, 'Erreur dans la modification du projet.')
+    return project(request, pk, project_form=project_form)
+
+
+@login_required
+@can_edit_project
+def add_user_to_project(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    member_form = addMemberForm(request.POST or None, projectId=pk)
+    if member_form.is_valid():
+        member = member_form.cleaned_data['member']
         if member in project.users.all():
             messages.error(request, 'Cet utilisateur est déjà dans le projet')
         else:
             project.users.add(member)
             messages.success(request, "L'utilisateur a bien été ajouté")
-    if(projectForm.is_valid()):
-        projectForm.save()
-        messages.success(request, 'Le projet a bien été modifié')
         return redirect(reverse('projects:project', kwargs={'pk':pk}))
-    return render(request, 'projects/project.html', {'active': 2, 'project': project, 'todo': task_todo, 'doing': task_doing, 'done': task_done, 'taken_tasks': taken_tasks, 'addMemberForm': memberForm, 'projectForm': projectForm})
+    return project(request, pk, member_form=member_form)
 
 
 @login_required
