@@ -141,7 +141,7 @@ def editTag(request, pk, tagId):
     if(form.is_valid()):
         form.save()
         messages.success(request, 'Le tag a bien été modifié')
-        return redirect(reverse('projects:manageTags'))
+        return redirect(reverse('projects:project', kwargs={'pk':pk}))
     return render(request, 'form.html', {'form': form, 'title': 'Modification du tag ' + tag.name, 'bouton': 'Modifier', 'icon': 'pencil-alt'})
 
 
@@ -155,7 +155,7 @@ def deleteTag(request, pk, tagId):
         return redirect(reverse('home'))
     tag.delete()
     messages.success(request, "Le tag a bien été supprimé")
-    return redirect(reverse('projects:manageTags'))
+    return redirect(reverse('projects:project', kwargs={'pk':pk}))
 
 
 @login_required
