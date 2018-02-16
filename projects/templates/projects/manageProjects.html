@@ -20,7 +20,7 @@
 	<td>{{project.users.count}}</td>
 	<td>{{project.owner}}</td>
 	<td>{% if project.active %}Actif{% else %}Inactif{% endif %}</td>
-    <td>{% if project.active %}<a href="{% url 'projects:changeState' project.pk %}" class="btn btn-outline-warning"><i class="fa fa-folder-open"></i>  Archiver</a>{% else %}<a href="{%url 'projects:changeState' project.pk %}" class="btn btn-outline-warning btn-sm"><i class="fa fa-folder-open"></i> Désarchiver</a>{% endif %} <a href="{% url 'projects:deleteProject' project.pk %}?next={% url 'projects:manageProjects' %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
+    <td>{% if project.active %}<a href="{% url 'projects:changeState' project.pk %}" class="btn btn-outline-warning btn-sm"><i class="fa fa-folder-open"></i>  Archiver</a>{% else %}<a href="{%url 'projects:changeState' project.pk %}" class="btn btn-outline-warning btn-sm"><i class="fa fa-folder-open"></i> Désarchiver</a>{% endif %} <a href="{% url 'projects:deleteProject' project.pk %}?next={% url 'projects:manageProjects' %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
 </tr>
 {% endfor %}
 </table>
