@@ -6,3 +6,7 @@ AUTH_LDAP_BIND_DN = ""
 AUTH_LDAP_BIND_PASSWORD = ""
 AUTH_LDAP_USER_SEARCH = LDAPSearch("", ldap.SCOPE_SUBTREE, "")
 
+SECRET_KEY = "Very secret word"
+
+ALLOWED_HOSTS = ['*']
+DATABASES = {}

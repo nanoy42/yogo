@@ -13,10 +13,10 @@ class ProjectForm(forms.ModelForm):
         }
 
 
-class addMemberForm(forms.Form):
+class AddMemberForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.projectId = kwargs.pop('projectId')
-        super(addMemberForm, self).__init__(*args, **kwargs)
+        super(AddMemberForm, self).__init__(*args, **kwargs)
         self.fields['member'].queryset = User.objects.exclude(pk__in=Project.objects.get(pk=self.projectId).users.all())
     member = forms.ModelChoiceField(queryset=User.objects.all(), label="")
 
