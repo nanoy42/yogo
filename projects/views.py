@@ -327,5 +327,5 @@ def change_task(request, pk, task_id):
     if(f.is_valid()):
         f.save()
         messages.success(request, "La tâche a bien été modifiée")
-        return redirect(reverse('project', kwargs={'id':task.project.pk}))
+        return redirect(reverse('projects:project', kwargs={'pk':task.project.pk}))
     return render(request, 'form.html', {'form': f, 'title': 'Modification de '+task.title, 'bouton': 'Modifier', 'icon': 'pencil-alt'})

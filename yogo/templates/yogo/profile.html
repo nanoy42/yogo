@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
 {% block content %}
 <h3>Mon profil</h3>
 Nom d'utilisateur : {{request.user}}<br>
@@ -8,4 +9,11 @@ Role : {% for group in request.user.groups.all %}{{group}}, {% endfor %}<br>
 Nombre de projets : {{request.user.membered_projects.count}}<br>
 Nombre de projets créés : {{createdProjects}} <br>
 Nombre de tâches : {{request.user.task_set.count}}<br>
+<h3>Changer mon adresse mail</h3>
+<form action="" method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button class="btn btn-outline-primary"><i class="fa fa-envelope"></i> Modifier mon adresse mail</button>
+</form>
+<h3>Mes préférences mail</h3>
 {% endblock %}

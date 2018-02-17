@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import logout, login, authenticate
-from .forms import LoginForm
+from .forms import LoginForm, MailForm
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from projects.models import Project
@@ -39,7 +39,12 @@ def manageUsers(request):
 
 def profile(request):
     createdProjects = Project.objects.filter(owner=request.user).count()
-    return render(request, 'yogo/profile.html', {'createdProjects':createdProjects})
+    form = MailForm(request.POST or None, instance=request.user)
+    if(form.is_valid()):
+        form.save()
+        messages.success(request, "L'adresse mail a bien été modifiée")
+        return redirect(reverse('profile'))
+    return render(request, 'yogo/profile.html', {'createdProjects':createdProjects, 'form':form})
 
 @admin_required
 def add_admin(request, user_id):
