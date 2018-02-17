@@ -236,7 +236,7 @@ def new_task(request, pk):
 
 
 @login_required
-@can_edit_project
+@member_required
 def change_task_status(request, pk, taskId, newStatus):
     cor = {'todo': Task.State.TODO,
            'doing': Task.State.DOING, 'done': Task.State.DONE}
