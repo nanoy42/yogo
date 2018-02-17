@@ -9,15 +9,13 @@ https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/
 
 import os
 import sys
-from .settings import DEBUG
 
-if not DEBUG:
-    VIRTUALENV_LOC = '/var/www/yogo/env_yogo'
+VIRTUALENV_LOC = '/var/www/yogo/env_yogo'
 
-    activate_env=os.path.join(VIRTUALENV_LOC, 'bin/activate_this.py')
-    exec(compile(open(activate_env, "rb").read(), activate_env, 'exec'), {'__file__':activate_env})
-    sys.path.append('/var/www/yogo')
-    sys.path.append('/var/www/yogo/yogo')
+activate_env=os.path.join(VIRTUALENV_LOC, 'bin/activate_this.py')
+exec(compile(open(activate_env, "rb").read(), activate_env, 'exec'), {'__file__':activate_env})
+sys.path.append('/var/www/yogo')
+sys.path.append('/var/www/yogo/yogo')
 
 
 from django.core.wsgi import get_wsgi_application
