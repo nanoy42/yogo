@@ -57,6 +57,11 @@
 		<td>{{doing.count}}</td>
 		<th>Nombre de tâches Done</th>
 		<td>{{done.count}}</td>
+	</tr>
+	<tr>
+      <th colspan="2" width="50%">Supprimer le projet</th>
+	  <td colspan="2" width="50%"><a href="{% url 'projects:deleteProject' project.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
+    </tr>
   </tbody>
 </table>
 </div>

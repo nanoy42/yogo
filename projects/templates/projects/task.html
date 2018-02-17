@@ -17,7 +17,7 @@
         {% endfor %}
     </div>
     <div class="card-footer">
-        <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a>
+		<a href="{% url 'projects:change_task' project.pk task.pk %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a>
         <a href="{% url 'projects:deleteTask' task.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a>
         <div class="btn-group" role="group">
             {% if task.status == task.State.TODO %}

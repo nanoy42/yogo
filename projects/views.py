@@ -314,3 +314,18 @@ def depaps(request, taskId):
             reverse('projects:project', kwargs={'pk': task.project.pk})
         )
         return redirect(next_url)
+
+@login_required
+@member_required
+def change_task(request, pk, task_id):
+    try:
+        task = Task.objects.get(pk=task_id)
+    except DoesNotExist:
+        messages.error(request, "La tâche n'existe pas")
+        return redirect(reverse('home'))
+    f = TaskForm(task.project, request.POST or None, instance=task)
+    if(f.is_valid()):
+        f.save()
+        messages.success(request, "La tâche a bien été modifiée")
+        return redirect(reverse('project', kwargs={'id':task.project.pk}))
+    return render(request, 'form.html', {'form': f, 'title': 'Modification de '+task.title, 'bouton': 'Modifier', 'icon': 'pencil-alt'})
