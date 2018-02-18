@@ -29,7 +29,7 @@ def logout_view(request):
 def manageUsers(request):
     users = User.objects.all()
     admin, _ = Group.objects.get_or_create(name="admin")
-    return render(request, 'yogo/manageUsers.html',{'users': users, 'admin':admin})
+    return render(request, 'users/manageUsers.html',{'users': users, 'admin':admin})
 
 def profile(request):
     createdProjects = Project.objects.filter(owner=request.user).count()
@@ -38,7 +38,7 @@ def profile(request):
         form.save()
         messages.success(request, "L'adresse mail a bien été modifiée")
         return redirect(reverse('profile'))
-    return render(request, 'yogo/profile.html', {'createdProjects':createdProjects, 'form':form})
+    return render(request, 'users/profile.html', {'createdProjects':createdProjects, 'form':form})
 
 @admin_required
 def add_admin(request, user_id):

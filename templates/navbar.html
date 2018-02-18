@@ -18,7 +18,7 @@
 	<ul class="navbar-nav ml-auto">
 	{% if request.user.is_authenticated %}
     {% if request.user.email == "" %}
-    <li class="nav-item"><a href="{% url 'profile' %}" class="nav-link"><i class="fa fa-exclamation-triangle"></i> Adresse mail non renseignée</a></li>
+    <li class="nav-item"><a href="{% url 'users:profile' %}" class="nav-link"><i class="fa fa-exclamation-triangle"></i> Adresse mail non renseignée</a></li>
     {% endif %}
 	<li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -27,18 +27,18 @@
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 			<a class="dropdown-item" href="{% url 'projects:newproject' %}"><i class="fa fa-plus"></i> Créer un nouveau projet</a>
 		  <div class="dropdown-divider"></div>
-		  <a class="dropdown-item" href="{% url 'profile' %}"><i class="fa fa-user"></i> Accéder à mon profil</a>
+		  <a class="dropdown-item" href="{% url 'users:profile' %}"><i class="fa fa-user"></i> Accéder à mon profil</a>
 		  <a class="dropdown-item" href="#"><i class="fa fa-life-ring"></i> Aide</a>
           <div class="dropdown-divider"></div>
 		  <a class="dropdown-item" href="{% url 'projects:manageProjects' %}"><i class="fa fa-folder-open"></i> Gérer les projets</a>
-		  <a class="dropdown-item" href="{% url 'manageUsers' %}"><i class="fa fa-users"></i> Gérer les utilisateurs</a>
+		  <a class="dropdown-item" href="{% url 'users:manageUsers' %}"><i class="fa fa-users"></i> Gérer les utilisateurs</a>
 		  <div class="dropdown-divider"></div>
-		  <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out-alt"></i> Se déconnecter</a>
+		  <a class="dropdown-item" href="{% url 'users:logout' %}"><i class="fa fa-sign-out-alt"></i> Se déconnecter</a>
         </div>
       </li>
 		{% else %}
 		<li class="nav-item {% if active == 4 %}active{% endif %}">
-			<a class="nav-link" href="{% url 'login' %}">Connexion<span class="sr-only">(current)</span></a>
+			<a class="nav-link" href="{% url 'users:login' %}">Connexion<span class="sr-only">(current)</span></a>
 		</li>
 	  {% endif %}
 	</ul>

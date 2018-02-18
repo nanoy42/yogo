@@ -11,7 +11,7 @@
     <a type="button" class="btn btn-primary btn-lg" href="{% url "projects:myprojects" %}"><i class="fa fa-paper-plane"></i> Accéder à mes projets</a>
 </div>
 {% else %}
-<a type="button" class="btn btn-success btn-lg" href="{% url 'login' %}"><i class="fa fa-sign-in-alt"></i> Se connecter</a>
+<a type="button" class="btn btn-success btn-lg" href="{% url 'users:login' %}"><i class="fa fa-sign-in-alt"></i> Se connecter</a>
 {% endif %}
 <br />
 <br />
