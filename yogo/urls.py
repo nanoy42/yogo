@@ -22,13 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name="home"),
     path('projects/', include('projects.urls')),
-    path('logout', views.logout_view, name="logout"),
-    path('login', views.login_view, name="login"),
-    path('manageUsers', views.manageUsers, name="manageUsers"),
-    path('profile', views.profile, name="profile"),
-    path('addAdmin/<int:user_id>', views.add_admin, name="addAdmin"),
-    path('removeAdmin/<int:user_id>', views.remove_admin, name="removeAdmin"),
-    path('removeUser/<int:user_id>', views.remove_user, name="removeUser"),
+    path('users/', include('users.urls')),
 ]
 
 if settings.DEBUG:
