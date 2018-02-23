@@ -37,7 +37,7 @@ def profile(request):
     if(form.is_valid()):
         form.save()
         messages.success(request, "L'adresse mail a bien été modifiée")
-        return redirect(reverse('profile'))
+        return redirect(reverse('users:profile'))
     return render(request, 'users/profile.html', {'createdProjects':createdProjects, 'form':form})
 
 @admin_required
@@ -53,7 +53,7 @@ def add_admin(request, user_id):
         return redirect(reverse('home'))
     user.groups.add(admin)
     messages.success(request, user.username + " a été passé administrateur")
-    return redirect(reverse('manageUsers'))
+    return redirect(reverse('users:manageUsers'))
 
 @admin_required
 def remove_admin(request, user_id):
@@ -68,7 +68,7 @@ def remove_admin(request, user_id):
         return redirect(reverse('home'))
     user.groups.remove(admin)
     messages.success(request, "Les droits admin ont bien été retirés")
-    return redirect(reverse('manageUsers'))
+    return redirect(reverse('users:manageUsers'))
 
 
 @admin_required
@@ -80,4 +80,4 @@ def remove_user(request, user_id):
         return redirect(reverse('home'))
     user.delete()
     messages.success(request, "L'utilisateur a été supprimé")
-    return redirect(reverse('manageUsers'))
+    return redirect(reverse('users:manageUsers'))
