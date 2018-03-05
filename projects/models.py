@@ -5,6 +5,16 @@ from django.contrib.auth.models import User
 
 
 class Project(models.Model):
+    """The Model for a project.
+
+    Attributes:
+        title : Title of the project.
+        owner : A foreign key towards an owner.
+        creationDate : The date of creation of the project.
+        users : Members of the project.
+        active : Toggle project activity.
+        description : A Short description of the project.
+    """
     title = models.CharField(max_length=255)
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='owned_projects')
@@ -17,14 +27,24 @@ class Project(models.Model):
         return self.title
 
     def is_member(self, user):
+        """Check if an user members the project."""
         return user in self.users.all()
 
     def is_owner(self, user):
+        """Check if an user owns the project."""
         return user == self.owner
 
 
 class Tag(models.Model):
+    """Tag for a Task
+
+    Attributes:
+        name : The name of the tag
+        color : The color of the tag
+        project : A foreign key towards the project
+    """
     class Color:
+        """Color of a Tag"""
         BLUE = 'primary'
         GREY = 'secondary'
         GREEN = 'success'
@@ -52,7 +72,23 @@ class Tag(models.Model):
 
 
 class Task(models.Model):
+    """A Task, linked to a project.
+
+    Attributes:
+        project : A foreign key towards the project
+        title : The title of the task
+        description : A short description of the task
+        userAssigned : A foreign key towards an assigned user
+        tags : Tags associated to the task
+        creationDate : Date of creation of the task
+        deadline : Deadline of the task
+        status : Status of the task (todo, doing or done)
+        prerequisites : prerequisites task
+        dependants : Dependants tasks
+        active : Toggle task activity
+    """
     class State:
+        """State of a Task"""
         TODO = 'todo'
         DOING = 'doin'
         DONE = 'done'
@@ -74,6 +110,7 @@ class Task(models.Model):
     status = models.CharField(choices=STATUS_CHOICES,
                               default=State.TODO, max_length=4)
     prerequisites = models.ManyToManyField("Task", blank=True)
+    dependants = models.ManyToManyField("Task", blank=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):

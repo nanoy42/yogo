@@ -10,6 +10,7 @@ from yogo.acl import can_edit_project, admin_required, member_required
 
 @login_required
 def my_projects(request):
+    """Display every projects membered by the user."""
     projects = request.user.membered_projects.all()
     active = 2
     return render(request, 'projects/myprojects.html', {
@@ -20,6 +21,7 @@ def my_projects(request):
 
 @login_required
 def my_tasks(request):
+    """Display every task assigned to the user."""
     active = 3
     todo_tasks = Task.objects.filter(
         userAssigned=request.user).filter(status=Task.State.TODO)
@@ -37,6 +39,7 @@ def my_tasks(request):
 
 @login_required
 def new_project(request):
+    """Creates a new project owned by the user."""
     active = 2
     form = ProjectForm(request.POST or None)
     if(form.is_valid()):
@@ -61,6 +64,12 @@ def new_project(request):
 @login_required
 @member_required
 def project(request, pk, project_form=None, member_form=None):
+    """Display a project
+    Args :
+        pk : Primary key of the project.
+        project_form : A ProjectForm instance to be used if it is not None.
+        member_form : An AddMemberForm instance to be used if it is not None.
+    """
     project = Project.objects.get(pk=pk)
     task_todo = project.task_set.filter(status=Task.State.TODO)
     task_doing = project.task_set.filter(status=Task.State.DOING)
@@ -68,8 +77,10 @@ def project(request, pk, project_form=None, member_form=None):
     taken_tasks = []
     for user in project.users.all():
         taken_tasks.append(project.task_set.filter(userAssigned=user).count())
-    memberForm = AddMemberForm(request.POST or None, projectId=pk)
-    projectForm = ProjectForm(request.POST or None, instance=project)
+    member_form = member_form or AddMemberForm(
+        request.POST or None, projectId=pk)
+    project_form = project_form or ProjectForm(
+        request.POST or None, instance=project)
     return render(request, 'projects/project.html', {
         'active': 2,
         'project': project,
@@ -77,14 +88,20 @@ def project(request, pk, project_form=None, member_form=None):
         'doing': task_doing,
         'done': task_done,
         'taken_tasks': taken_tasks,
-        'addMemberForm': memberForm,
-        'projectForm': projectForm
+        'addMemberForm': member_form,
+        'projectForm': project_form
     })
 
 
 @login_required
 @can_edit_project
 def update_project_info(request, pk):
+    """Updates a project informations.
+
+    Intended to be called from the `project` view.
+    Args:
+        pk : Primary key of the project.
+    """
     project = Project.objects.get(pk=pk)
     project_form = ProjectForm(request.POST or None, instance=project)
     if project_form.is_valid():
@@ -98,6 +115,12 @@ def update_project_info(request, pk):
 @login_required
 @can_edit_project
 def add_user_to_project(request, pk):
+    """Adds an user to a project.
+
+    Intended to be called from the `project` view.
+    Args:
+        pk : Primary key of the project.
+    """
     project = get_object_or_404(Project, pk=pk)
     member_form = AddMemberForm(request.POST or None, projectId=pk)
     if member_form.is_valid():
@@ -114,6 +137,12 @@ def add_user_to_project(request, pk):
 @login_required
 @can_edit_project
 def delete_user_from_project(request, pk, user_id):
+    """Remove an user from a project.
+
+    Args:
+        pk : The primary key of the project.
+        user_id : The primary key of the user.
+    """
     project = Project.objects.get(pk=pk)
     user = User.objects.get(pk=user_id)
     if(user not in project.users.all()):
@@ -127,6 +156,7 @@ def delete_user_from_project(request, pk, user_id):
 @login_required
 @admin_required
 def manage_projects(request):
+    """Show a management view for every project of the site."""
     projects = Project.objects.all()
     return render(
         request,
@@ -138,9 +168,14 @@ def manage_projects(request):
 @login_required
 @can_edit_project
 def change_state(request, pk):
+    """Change the state of a project.
+
+    Args:
+        pk : The primary key of the project.
+    """
     try:
         project = Project.objects.get(pk=pk)
-    except:
+    except DoesNotExist:
         project = None
     if(project is not None):
         project.active = 1 - project.active
@@ -154,6 +189,11 @@ def change_state(request, pk):
 @login_required
 @can_edit_project
 def delete_project(request, pk):
+    """Delete a project.
+
+    Args:
+        pk : The primary key of the project.
+    """
     try:
         project = Project.objects.get(pk=pk)
     except DoesNotExist:
@@ -167,6 +207,11 @@ def delete_project(request, pk):
 @login_required
 @can_edit_project
 def new_tag(request, pk):
+    """Create a tag for a project.
+
+    Args:
+        pk : The primary key of the project.
+    """
     form = TagForm(request.POST or None)
     project = get_object_or_404(Project, pk=pk)
     if(form.is_valid()):
@@ -185,6 +230,12 @@ def new_tag(request, pk):
 @login_required
 @can_edit_project
 def edit_tag(request, pk, tagId):
+    """Edit the tag of a project.
+
+    Args:
+        pk : The primary key of the project (used mainly for ACL purpose).
+        tagId : The primary key of the tag.
+    """
     try:
         tag = Tag.objects.get(pk=tagId)
     except DoesNotExist:
@@ -206,6 +257,12 @@ def edit_tag(request, pk, tagId):
 @login_required
 @can_edit_project
 def delete_tag(request, pk, tagId):
+    """Delete a tag of a project.
+
+    Args:
+        pk : The primary key of the project (used mainly for ACL purpose).
+        tagId : The primary key of the tag.
+    """
     try:
         tag = Tag.objects.get(pk=tagId)
     except DoesNotExist:
@@ -219,6 +276,11 @@ def delete_tag(request, pk, tagId):
 @login_required
 @member_required
 def new_task(request, pk):
+    """Create a task for a project.
+
+    Args:
+        pk : The primary key of the project.
+    """
     active = 2
     project = Project.objects.get(pk=pk)
     form = TaskForm(project, request.POST or None)
@@ -237,16 +299,27 @@ def new_task(request, pk):
 
 @login_required
 @member_required
-def change_task_status(request, pk, taskId, newStatus):
-    cor = {'todo': Task.State.TODO,
-           'doing': Task.State.DOING, 'done': Task.State.DONE}
+def change_task_status(request, pk, taskId, new_status):
+    """Change the status of a task.
+
+    Args:
+        pk : The primary key of the project (mainly for ACL purpose).
+        taskId : The primary key of the task.
+        new_status : The new status for the task
+            (must be in {'todo','doing','done'})
+    """
+    cor = {
+        'todo': Task.State.TODO,
+        'doing': Task.State.DOING,
+        'done': Task.State.DONE
+    }
     try:
         task = Task.objects.get(pk=taskId)
     except DoesNotExist:
         messages.error(request, "La tâche n'existe pas")
         return redirect(reverse('home'))
     try:
-        task.status = cor[newStatus]
+        task.status = cor[new_status]
     except IndexError:
         messages.error(request, "Le status demandé n'existe pas")
         return redirect(reverse('home'))
@@ -259,6 +332,11 @@ def change_task_status(request, pk, taskId, newStatus):
 
 @login_required
 def delete_task(request, taskId):
+    """Delete a task
+
+    Args:
+        taskId : The primary key of the task.
+    """
     try:
         task = Task.objects.get(pk=taskId)
     except DoesNotExist:
@@ -275,6 +353,11 @@ def delete_task(request, taskId):
 
 @login_required
 def paps(request, taskId):
+    """Assign a task to the current user.
+
+    Args:
+        taskId : The primary key of the task.
+    """
     try:
         task = Task.objects.get(pk=taskId)
     except DoesNotExist:
@@ -291,6 +374,11 @@ def paps(request, taskId):
 
 @login_required
 def depaps(request, taskId):
+    """Deassign a task to the active user.
+
+    Args:
+        taskId : The primary key of the task.
+    """
     try:
         task = Task.objects.get(pk=taskId)
     except DoesNotExist:
@@ -318,6 +406,12 @@ def depaps(request, taskId):
 @login_required
 @member_required
 def change_task(request, pk, task_id):
+    """Edit a task.
+
+    Args:
+        pk : The primary key of the project (for ACL mainly).
+        task_id : The primary key of the task.
+    """
     try:
         task = Task.objects.get(pk=task_id)
     except DoesNotExist:
