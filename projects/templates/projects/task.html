@@ -1,5 +1,6 @@
 <div class="card">
-    <div class="card-header">{{task.title}}</div>
+    <div class="card-header" data-toggle="collapse" data-target="#collapseTask{{task.pk}}" aria-expanded="false" aria-controls="collapseExample">{{task.title}}</div>
+    <div class="collapse" id="collapseTask{{task.pk}}">
     <div class="card-body">
         <p class="card-text">{{task.description}}</p>
         {% if task.userAssigned is None %}
@@ -17,7 +18,7 @@
         {% endfor %}
     </div>
     <div class="card-footer">
-		<a href="{% url 'projects:change_task' project.pk task.pk %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a>
+        <a href="{% url 'projects:change_task' project.pk task.pk %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a>
         <a href="{% url 'projects:deleteTask' task.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a>
         <div class="btn-group" role="group">
             {% if task.status == task.State.TODO %}
@@ -32,5 +33,6 @@
             {% endif %}
 
         </div>
+    </div>
     </div>
 </div>
