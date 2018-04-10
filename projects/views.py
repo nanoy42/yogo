@@ -323,7 +323,7 @@ def change_task_status(request, taskId, new_status):
     task.save()
     messages.success(request, "La tâche est passée en " + new_status)
     url_next = request.GET.get('next', reverse(
-        'projects:project', kwargs={'pk': pk}))
+        'projects:project', kwargs={'pk': task.get_project().pk}))
     return redirect(url_next)
 
 

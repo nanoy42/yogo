@@ -33,15 +33,18 @@ class TagForm(forms.ModelForm):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ('project',)
+        exclude = ('project','')
         labels = {
             'title': 'Titre',
             'userAssigned': 'Qui dit paps ?',
             'status': 'Statut',
             'prerequisites': 'Prérequis',
+            'dependants': 'Dépendants',
             'active': 'Actif'
         }
     def __init__(self, project, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.instance.project = project
         self.fields['tags'].queryset = project.tag_set.all()
+        self.fields['prerequisites'].queryset = project.task_set.all()
+        self.fields['dependants'].queryset = project.task_set.all()
