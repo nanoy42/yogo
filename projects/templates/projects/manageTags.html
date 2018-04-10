@@ -12,7 +12,7 @@
 			<tr>
 				<td>{{tag.name}}</td>
 				<td><span class="badge badge-{{tag.color}}">{{tag.name}}</span></td>
-				<td><a href="{% url 'projects:editTag' project.pk tag.pk %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="{% url 'projects:deleteTag' project.pk tag.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
+				<td><a href="{% url 'projects:editTag' tag.pk %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-pencil-alt"></i> Modifier</a> <a href="{% url 'projects:deleteTag' tag.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
 			</tr>
 		{% endfor %}
 	</tbody>

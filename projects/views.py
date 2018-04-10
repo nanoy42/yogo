@@ -62,7 +62,7 @@ def new_project(request):
 
 
 @login_required
-@member_required
+@member_required(Project)
 def project(request, pk, project_form=None, member_form=None):
     """Display a project
     Args :
@@ -94,7 +94,7 @@ def project(request, pk, project_form=None, member_form=None):
 
 
 @login_required
-@can_edit_project
+@can_edit_project(Project)
 def update_project_info(request, pk):
     """Updates a project informations.
 
@@ -113,7 +113,7 @@ def update_project_info(request, pk):
 
 
 @login_required
-@can_edit_project
+@can_edit_project(Project)
 def add_user_to_project(request, pk):
     """Adds an user to a project.
 
@@ -135,7 +135,7 @@ def add_user_to_project(request, pk):
 
 
 @login_required
-@can_edit_project
+@can_edit_project(Project)
 def delete_user_from_project(request, pk, user_id):
     """Remove an user from a project.
 
@@ -166,7 +166,7 @@ def manage_projects(request):
 
 
 @login_required
-@can_edit_project
+@can_edit_project(Project)
 def change_state(request, pk):
     """Change the state of a project.
 
@@ -187,7 +187,7 @@ def change_state(request, pk):
 
 
 @login_required
-@can_edit_project
+@can_edit_project(Project)
 def delete_project(request, pk):
     """Delete a project.
 
@@ -205,7 +205,7 @@ def delete_project(request, pk):
 
 
 @login_required
-@can_edit_project
+@can_edit_project(Project)
 def new_tag(request, pk):
     """Create a tag for a project.
 
@@ -228,12 +228,11 @@ def new_tag(request, pk):
 
 
 @login_required
-@can_edit_project
-def edit_tag(request, pk, tagId):
+@can_edit_project(Tag, url_arg='tagId')
+def edit_tag(request, tagId):
     """Edit the tag of a project.
 
     Args:
-        pk : The primary key of the project (used mainly for ACL purpose).
         tagId : The primary key of the tag.
     """
     try:
@@ -255,12 +254,11 @@ def edit_tag(request, pk, tagId):
 
 
 @login_required
-@can_edit_project
-def delete_tag(request, pk, tagId):
+@can_edit_project(Tag, url_arg='tagId')
+def delete_tag(request, tagId):
     """Delete a tag of a project.
 
     Args:
-        pk : The primary key of the project (used mainly for ACL purpose).
         tagId : The primary key of the tag.
     """
     try:
@@ -274,7 +272,7 @@ def delete_tag(request, pk, tagId):
 
 
 @login_required
-@member_required
+@member_required(Project)
 def new_task(request, pk):
     """Create a task for a project.
 
@@ -298,12 +296,11 @@ def new_task(request, pk):
 
 
 @login_required
-@member_required
-def change_task_status(request, pk, taskId, new_status):
+@member_required(Task, url_arg='taskId')
+def change_task_status(request, taskId, new_status):
     """Change the status of a task.
 
     Args:
-        pk : The primary key of the project (mainly for ACL purpose).
         taskId : The primary key of the task.
         new_status : The new status for the task
             (must be in {'todo','doing','done'})
@@ -324,7 +321,7 @@ def change_task_status(request, pk, taskId, new_status):
         messages.error(request, "Le status demandé n'existe pas")
         return redirect(reverse('home'))
     task.save()
-    messages.success(request, "La tâche est passée en " + newStatus)
+    messages.success(request, "La tâche est passée en " + new_status)
     url_next = request.GET.get('next', reverse(
         'projects:project', kwargs={'pk': pk}))
     return redirect(url_next)
@@ -404,12 +401,11 @@ def depaps(request, taskId):
         return redirect(next_url)
 
 @login_required
-@member_required
-def change_task(request, pk, task_id):
+@member_required(Task, url_arg='task_id')
+def change_task(request, task_id):
     """Edit a task.
 
     Args:
-        pk : The primary key of the project (for ACL mainly).
         task_id : The primary key of the task.
     """
     try:

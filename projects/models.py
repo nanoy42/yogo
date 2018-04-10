@@ -34,6 +34,10 @@ class Project(models.Model):
         """Check if an user owns the project."""
         return user == self.owner
 
+    def get_project(self):
+        """Used for ACL, returns self."""
+        return self
+
 
 class Tag(models.Model):
     """Tag for a Task
@@ -69,6 +73,10 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_project(self):
+        """Used for ACL"""
+        return self.project
 
 
 class Task(models.Model):
@@ -109,9 +117,21 @@ class Task(models.Model):
     deadline = models.DateField(blank=True, null=True)
     status = models.CharField(choices=STATUS_CHOICES,
                               default=State.TODO, max_length=4)
-    prerequisites = models.ManyToManyField("Task", blank=True)
-    dependants = models.ManyToManyField("Task", blank=True)
+    prerequisites = models.ManyToManyField(
+        "Task",
+        blank=True,
+        related_name='prerequisited_by'
+    )
+    dependants = models.ManyToManyField(
+        "Task",
+        blank=True,
+        related_name='dependanted_by'
+    )
     active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.project.title + ">>" + self.title
+
+    def get_project(self):
+        """Used for ACL"""
+        return self.project
