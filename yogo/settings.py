@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -121,7 +121,7 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 
-LOGIN_URL = 'login'
+LOGIN_URL = '/users/login'
 ############################## django-auth-ldap ##############################
 if DEBUG:
     import logging, logging.handlers
