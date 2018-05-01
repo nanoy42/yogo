@@ -9,6 +9,7 @@ __pycache__/
 local_settings.py
 db.sqlite3
 media
+debug_mode.py
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
@@ -127,4 +128,3 @@ tags
 
 
 # End of https://www.gitignore.io/api/vim,django,python
-yogo/local_settings.py
