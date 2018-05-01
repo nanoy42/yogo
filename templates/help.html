@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2><i class="fa fa-life-ring"></i> Aide de Yogo <i class="fa fa-life-ring"></i></h2>
+<h3><i class="fa fa-life-ring"></i> Introduction</h3>
+Yogo est un site de gestion de projet fonctionnant sur le système du tableau 'TO-DO', 'DOING', 'DONE' (à la manière de trello ou kanboard).</br></br>
+<h3><i class="fa fa-life-ring"></i> Projets</h3>
+Vous pouvez créer un projet en cliquant sur le bouton de la page d'accueil ou sur le bouton du menu déroulant en haut à droite.</br>
+Les projets inactifs sont inacessibles par les membres autres que les administrateurs</br>
+Les informations du projet se trouvent dans l'onglet projet (où vous pouvez aussi le supprimer) et vous pouvez changer ces informations dans l'onglet Modifier le projet.</br>
+Les membres s'ajoutent dans l'onglet Gérer les membres, c'est aussi dans cet onglet que sont gérés les administrateurs du projet</br></br>
+<h3><i class="fa fa-life-ring"></i> Les tâches</h3>
+Vous pouvez retrouver l'ensemble des taches qui vous sont assignées dans l'onglet principal Tâches.</br>
+Vous pouvez retouver l'ensemble des tâches d'un projet dans l'onglet tâches de celui-ci.</br>
+Une tache peut être assignée à un utilisateur du projet, celui peut aussi la papsée (PAPS : Premier Arrivé Premier Servi) ou la dépapsée pour l'abandonner.</br>
+Une tache peut aussi avoir des prérequis, c'est à dire d'autres taches qui si elles ne sont pas réalisées, empêchent le changement de statuts des tâches dépendantes.</br>
+Une tâche peut aussi posséder un ou plusieurs tags</br></br>
+<h3><i class="fa fa-life-ring"></i> Les tags</h3>
+Les tags permettent de mieux classer les tâches. Ils sont relatifs à un projet et peuvent être gérés depuis l'onglet Gérer les tags. </br></br>
+<h3><i class="fa fa-life-ring"></i> Administrateurs d'un projet</h3>
+Les administrateurs d'un projet sont les seuls à pouvoir :
+<ul>
+	<li>Supprimer le projet</li>
+	<li>Changer le titre, la description ou si le projet est actif</li>
+	<li>Retirer un membre du projet</li>
+</ul>
+Ils peuvent être nommés dans l'onglet Gérer les membres du projet.</br>
+Par défaut, le créateur d'un projet est administrateur.</br></br>
+<h3><i class="fa fa-life-ring"></i> Profil</h3>
+Les informations de votre compte sont rassebmlées sur votre profil.</br>
+Vous y trouverez aussi vos préférences mails et télégrams.</br>
+</br></br></br>
+{% endblock %}

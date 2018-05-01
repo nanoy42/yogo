@@ -23,6 +23,7 @@ urlpatterns = [
     path('', views.home, name="home"),
     path('projects/', include('projects.urls')),
     path('users/', include('users.urls')),
+    path('help', views.help, name="help"),
 ]
 
 if settings.DEBUG:
