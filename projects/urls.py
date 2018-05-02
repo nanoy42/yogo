@@ -22,4 +22,6 @@ urlpatterns = [
     path('paps/<int:taskId>', views.paps, name="paps"),
     path('depaps/<int:taskId>', views.depaps, name="depaps"),
     path('change_task/<int:task_id>', views.change_task, name="change_task"),
+    path('<int:pk>/addUserToProjectAdmins/<int:user_id>', views.add_user_to_project_admins, name="addUserToProjectAdmins"),
+    path('<int:pk>/removeUserFromProjectAdmins/<int:user_id>', views.remove_user_from_project_admins, name="removeUserFromProjectAdmins"),
 ]

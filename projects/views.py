@@ -5,7 +5,7 @@ from .forms import ProjectForm, AddMemberForm, TagForm, TaskForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from yogo.acl import can_edit_project, admin_required, member_required
+from yogo.acl import project_admin_required, admin_required, member_required
 
 
 @login_required
@@ -94,7 +94,7 @@ def project(request, pk, project_form=None, member_form=None):
 
 
 @login_required
-@can_edit_project(Project)
+@project_admin_required(Project)
 def update_project_info(request, pk):
     """Updates a project informations.
 
@@ -113,7 +113,7 @@ def update_project_info(request, pk):
 
 
 @login_required
-@can_edit_project(Project)
+@project_admin_required(Project)
 def add_user_to_project(request, pk):
     """Adds an user to a project.
 
@@ -130,12 +130,11 @@ def add_user_to_project(request, pk):
         else:
             project.users.add(member)
             messages.success(request, "L'utilisateur a bien été ajouté")
-        return redirect(reverse('projects:project', kwargs={'pk': pk}))
-    return project(request, pk, member_form=member_form)
+    return redirect(reverse('projects:project', kwargs={'pk': pk}))
 
 
 @login_required
-@can_edit_project(Project)
+@project_admin_required(Project)
 def delete_user_from_project(request, pk, user_id):
     """Remove an user from a project.
 
@@ -166,7 +165,7 @@ def manage_projects(request):
 
 
 @login_required
-@can_edit_project(Project)
+@project_admin_required(Project)
 def change_state(request, pk):
     """Change the state of a project.
 
@@ -187,7 +186,7 @@ def change_state(request, pk):
 
 
 @login_required
-@can_edit_project(Project)
+@project_admin_required(Project)
 def delete_project(request, pk):
     """Delete a project.
 
@@ -205,7 +204,7 @@ def delete_project(request, pk):
 
 
 @login_required
-@can_edit_project(Project)
+@project_admin_required(Project)
 def new_tag(request, pk):
     """Create a tag for a project.
 
@@ -228,7 +227,7 @@ def new_tag(request, pk):
 
 
 @login_required
-@can_edit_project(Tag, url_arg='tagId')
+@project_admin_required(Tag, url_arg='tagId')
 def edit_tag(request, tagId):
     """Edit the tag of a project.
 
@@ -254,7 +253,7 @@ def edit_tag(request, tagId):
 
 
 @login_required
-@can_edit_project(Tag, url_arg='tagId')
+@project_admin_required(Tag, url_arg='tagId')
 def delete_tag(request, tagId):
     """Delete a tag of a project.
 
@@ -328,6 +327,7 @@ def change_task_status(request, taskId, new_status):
 
 
 @login_required
+@member_required(Project)
 def delete_task(request, taskId):
     """Delete a task
 
@@ -349,6 +349,7 @@ def delete_task(request, taskId):
 
 
 @login_required
+@member_required(Project)
 def paps(request, taskId):
     """Assign a task to the current user.
 
@@ -370,6 +371,7 @@ def paps(request, taskId):
 
 
 @login_required
+@member_required(Project)
 def depaps(request, taskId):
     """Deassign a task to the active user.
 
@@ -419,3 +421,40 @@ def change_task(request, task_id):
         messages.success(request, "La tâche a bien été modifiée")
         return redirect(reverse('projects:project', kwargs={'pk':task.project.pk}))
     return render(request, 'form.html', {'form': f, 'title': 'Modification de '+task.title, 'bouton': 'Modifier', 'icon': 'pencil-alt'})
+
+
+
+@login_required
+@project_admin_required(Project)
+def add_user_to_project_admins(request, pk, user_id):
+    try:
+        project = Project.objects.get(pk=pk)
+        user = User.objects.get(pk=user_id)
+    except DoesNotExist:
+        messages.error(request, "Le projet ou l'utilisateur n'existe pas")
+        return redirect(reverse('home'))
+    project.admins.add(user)
+    messages.success(request, "L'utilisateur a reçu les droits admins")
+    return redirect(reverse(
+        'projects:project',
+        kwargs={'pk': pk}
+    ))
+
+
+@login_required
+@project_admin_required(Project)
+def remove_user_from_project_admins(request, pk, user_id):
+    try:
+        project = Project.objects.get(pk=pk)
+        user = User.objects.get(pk=user_id)
+    except DoesNotExist:
+        messages.error(request, "Le projet ou l'utilisateur n'existe pas")
+        return redirect(reverse('home'))
+    if(user not in project.admins.all()):
+        messages.error(request, "L'utilisateur ne possède pas les droits admins")
+    elif(project.admins.all().count() == 1):
+        messages.error(request, "Vous ne pouvez pas laisser un projet sans admins")
+    else:
+        project.admins.remove(user)
+        messages.success(request, "Les droits admins ont bien été retirés à l'utilisateur")
+    return redirect(reverse('projects:project', kwargs={'pk':pk}))

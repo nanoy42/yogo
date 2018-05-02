@@ -37,8 +37,8 @@
     <tr>
       <th>Création</th>
 	  <td>{{project.creationDate}}</td>
-      <th>Créateur</th>
-	  <td>{{project.owner}}</td>
+      <th>Admins</th>
+	  <td>{% for admin in project.admins.all%}{{admin}},{% endfor %}</td>
     </tr>
     <tr>
       <th>Projet actif</th>
@@ -74,26 +74,21 @@
 	<button class="btn btn-outline-primary"><i class="fa fa-user-plus"></i> Ajouter le membre</button>
 </form>
 <hr>
-<h5>Passasse de créateur</h5>
-Désigner le nouveau créateur (chef de projet):
-<hr>
 <h5>Liste des membres</h5>
 <table class="table table-striped">
 	<thead>
 		<tr>
 			<th>Nom d'utilisateur</th>
 			<th>Nombre de tâches papsées</th>
-			<th>Role</th>
-			<th>Administrer</th>
+			{% if request.user in project.admins.all %}<th>Administrer</th>{% endif %}
 		</tr>
 	</thead>
 	<tbody>
 		{% for member in project.users.all %}
 		<tr>
-			<td>{{member.username}} {% if member == project.owner %}<i class="fa fa-star"></i>{% endif %}</td>
+			<td>{{member.username}} {% if member == project.owner %}<i class="fa fa-star"></i>{% endif %}{% if member in project.admins.all %} <i class="fa fa-star"></i>{% endif %}</td>
 			<td>{{taken_tasks|index:forloop.counter0}}</td>
-			<td></td>
-			<td>{% if member != project.owner %}<a class="btn btn-outline-danger" href="{% url 'projects:deleteUserFromProject' project.pk member.pk %}"><i class="fa fa-times"></i> Retirer du projet</a>{% endif %}</td>
+			{% if request.user in project.admins.all %}<td>{% if member not in project.admins.all %}<a class="btn btn-outline-success btn-sm" href="{% url 'projects:addUserToProjectAdmins' project.pk member.pk %}"><i class="fa fa-star"></i> Donner les droits admins</a> <a class="btn btn-outline-danger btn-sm" href="{% url 'projects:deleteUserFromProject' project.pk member.pk %}"><i class="fa fa-times"></i> Retirer du projet</a>{% else %}<a class="btn btn-outline-warning btn-sm" href="{% url 'projects:removeUserFromProjectAdmins' project.pk member.pk %}"><i class="fa fa-times"></i> Retirer les droits admins</a>{% endif %}</td>{% endif %}
 		</tr>
 		{% endfor %}
 	</tbody>

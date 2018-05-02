@@ -16,8 +16,7 @@ class Project(models.Model):
         description : A Short description of the project.
     """
     title = models.CharField(max_length=255)
-    owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='owned_projects')
+    admins = models.ManyToManyField(User, related_name='administrated_projects')
     creationDate = models.DateField(auto_now_add=True)
     users = models.ManyToManyField(User, related_name='membered_projects')
     active = models.BooleanField(default=True)
