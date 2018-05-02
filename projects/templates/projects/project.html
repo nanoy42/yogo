@@ -14,12 +14,14 @@
   <li class="nav-item">
     <a class="main_tab nav-link" href="#" data-target="div_members" id="link_div_members"><i class="fas fa-users"></i> Gérer les membres</a>
   </li>
+  {% if request.user in project.admins.all %}
   <li class="nav-item">
     <a class="main_tab nav-link" href="#" data-target="div_update" id="link_div_update"><i class="fas fa-pencil-alt"></i> Modifier le projet</a>
   </li>
   <li class="nav-item">
     <a class="main_tab nav-link" href="#" data-target="div_tags" id="link_div_tags"><i class="fas fa-tags"></i> Gérer les tags</a>
   </li>
+  {% endif %}
 </ul>
 <div id="div_tasks" style="display:block">
 <br />
@@ -38,7 +40,7 @@
       <th>Création</th>
 	  <td>{{project.creationDate}}</td>
       <th>Admins</th>
-	  <td>{% for admin in project.admins.all%}{{admin}},{% endfor %}</td>
+	  <td>{% for admin in project.admins.all%}{{admin}}, {% endfor %}</td>
     </tr>
     <tr>
       <th>Projet actif</th>
@@ -58,10 +60,12 @@
 		<th>Nombre de tâches Done</th>
 		<td>{{done.count}}</td>
 	</tr>
+	{% if request.user in project.admins.all %}
 	<tr>
       <th colspan="2" width="50%">Supprimer le projet</th>
 	  <td colspan="2" width="50%"><a href="{% url 'projects:deleteProject' project.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
     </tr>
+	{% endif %}
   </tbody>
 </table>
 </div>
@@ -94,6 +98,7 @@
 	</tbody>
 </table>
 </div>
+{% if request.user in project.admins.all %}
 <div id="div_update" style="display:none">
 <br>
 <h5>Modifier le projet</h5>
@@ -108,6 +113,7 @@
 <div id="div_tags" style="display:none">
 	{% include "projects/manageTags.html" %}
 </div>
+{% endif %}
 
 <script>
 		$(document).ready(function(){

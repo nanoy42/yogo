@@ -7,7 +7,6 @@ Adresse e-mail : {{request.user.email}}<br>
 Date d'inscription : {{request.user.date_joined | date:"d/m/Y"}}<br>
 Role : {% for group in request.user.groups.all %}{{group}}, {% endfor %}<br>
 Nombre de projets : {{request.user.membered_projects.count}}<br>
-Nombre de projets créés : {{createdProjects}} <br>
 Nombre de tâches : {{request.user.task_set.count}}<br>
 <h3>Modifier mon adresse mail</h3>
 <form action="" method="post" class="form">

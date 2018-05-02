@@ -113,7 +113,6 @@ def update_project_info(request, pk):
 
 
 @login_required
-@project_admin_required(Project)
 def add_user_to_project(request, pk):
     """Adds an user to a project.
 

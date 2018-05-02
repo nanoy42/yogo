@@ -32,13 +32,12 @@ def manageUsers(request):
     return render(request, 'users/manageUsers.html',{'users': users, 'admin':admin})
 
 def profile(request):
-    createdProjects = Project.objects.filter(owner=request.user).count()
     form = MailForm(request.POST or None, instance=request.user)
     if(form.is_valid()):
         form.save()
         messages.success(request, "L'adresse mail a bien été modifiée")
         return redirect(reverse('users:profile'))
-    return render(request, 'users/profile.html', {'createdProjects':createdProjects, 'form':form})
+    return render(request, 'users/profile.html', {'form':form})
 
 @admin_required
 def add_admin(request, user_id):
