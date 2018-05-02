@@ -5,11 +5,11 @@ from django.contrib.auth.models import Group
 from .utils import is_admin
 
 
-def can_edit_project(model, field='pk', url_arg='pk'):
+def project_admin_required(model, field='pk', url_arg='pk'):
     def decorator(view):
         def wrapper(request, *args, **kwargs):
             project = get_object_or_404(model, **{field: kwargs[url_arg]}).get_project()
-            ok = request.user == project.owner or is_admin(request.user)
+            ok = request.user in project.admins.all() or is_admin(request.user)
             if not ok:
                 messages.error(
                     request, "Vous ne pouvez pas modifier ce projet.")

@@ -4,7 +4,7 @@ from .models import Project, Tag, Task
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'owner', 'active')
+    list_display = ('title', 'active')
 
 
 admin.site.register(Project, ProjectAdmin)
