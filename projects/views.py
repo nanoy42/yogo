@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from .models import Task, Project, Tag
 from .forms import ProjectForm, AddMemberForm, TagForm, TaskForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from yogo.acl import project_admin_required, admin_required, member_required
-
+from yogo.acl import project_admin_required, admin_required, member_required, ProjectAdminMixin
+from django.views.generic.edit import DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 @login_required
 def my_projects(request):
@@ -182,24 +183,6 @@ def change_state(request, pk):
     else:
         messages.error(request, 'Ce projet n\'existe pas')
     return redirect(redirect('home'))
-
-
-@login_required
-@project_admin_required(Project)
-def delete_project(request, pk):
-    """Delete a project.
-
-    Args:
-        pk : The primary key of the project.
-    """
-    try:
-        project = Project.objects.get(pk=pk)
-    except DoesNotExist:
-        messages.error(request, 'Ce projet n\'existe pas')
-        return redirect(reverse('home'))
-    project.delete()
-    messages.success(request, 'Le projet a bien été supprimé')
-    return redirect(request.GET.get('next', reverse('home')))
 
 
 @login_required
@@ -457,3 +440,12 @@ def remove_user_from_project_admins(request, pk, user_id):
         project.admins.remove(user)
         messages.success(request, "Les droits admins ont bien été retirés à l'utilisateur")
     return redirect(reverse('projects:project', kwargs={'pk':pk}))
+
+class ProjectDelete(ProjectAdminMixin, LoginRequiredMixin, DeleteView):
+    model = Project
+    success_url = reverse_lazy('home')
+    success_message = "Le projet a bien été supprimé"
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(ProjectDelete, self).delete(request, *args, **kwargs)
