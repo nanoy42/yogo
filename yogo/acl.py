@@ -5,6 +5,10 @@ from django.contrib.auth.models import Group
 from .utils import is_admin
 
 
+class ProjectAdminMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        return project_admin_required(self.model)(super().dispatch)(request, *args, **kwargs)
+
 def project_admin_required(model, field='pk', url_arg='pk'):
     def decorator(view):
         def wrapper(request, *args, **kwargs):

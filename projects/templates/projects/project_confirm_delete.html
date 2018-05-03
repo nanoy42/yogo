@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post">{% csrf_token %}
+    <p>Etes vous sur de vouloir supprimer le projet "{{ object }}"? Cette action est irréversible</p>
+	<button class="btn btn-danger btn-sm" type="submit"><i class="fa fa-trash"></i> Supprimer</button> <a class="btn btn-primary btn-sm" href="{% url 'projects:project' object.pk %}"><i class="fa fa-times"></i> Annuler</a>
+</form>
+{% endblock %}
