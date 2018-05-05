@@ -9,5 +9,7 @@ urlpatterns = [path('logout', views.logout_view, name="logout"),
     path('addAdmin/<int:user_id>', views.add_admin, name="addAdmin"),
     path('removeAdmin/<int:user_id>', views.remove_admin, name="removeAdmin"),
     path('removeUser/<int:user_id>', views.remove_user, name="removeUser"),
+    path('updateTelegramInfos', views.update_telegram_infos, name="updateTelegramInfos"),
+    path('verifyToken', views.verifyToken, name="verifyToken"),
 ]
 

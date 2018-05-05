@@ -10,3 +10,5 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+TELEGRAM_TOKEN = '565445966:AAEMHZ0swAHLej4my2ZEthkzVIYVQAeUi9U'

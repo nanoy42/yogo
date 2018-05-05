@@ -14,5 +14,40 @@ Nombre de tâches : {{request.user.task_set.count}}<br>
     {% bootstrap_form form %}
     <button class="btn btn-outline-primary"><i class="fa fa-envelope"></i> Modifier mon adresse mail</button>
 </form>
+<br>
+<h3>Préférences Télégram</h3>
+Identifiant du chat : {{request.user.telegrampreferences.chatId}}<br>
+Chat vérifié : {% if request.user.telegrampreferences.verified %}Oui{% else %}Non (<a href="#" data-toggle="modal" data-target="#verifyModal">Vérifier mon chat</a>){% endif %}
+<hr>
+<form action="{% url 'users:updateTelegramInfos' %}" method="post" class="form">
+	{% csrf_token %}
+	{% bootstrap_form form2 %}
+	<button class="btn btn-outline-primary"><i class="fa fa-paper-plane"></i> Modifier mes informations Télégram</button>
+</form>
+<br>
 <h3>Préférences mail</h3>
+
+
+<div class="modal" tabindex="-1" role="dialog" id="verifyModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Vérifier mon chat</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+	  <form action="{% url 'users:verifyToken' %}" method="post">
+      <div class="modal-body">
+			  {% csrf_token %}
+			  {% bootstrap_form form3 %}
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Vérifier</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+      </div>
+	  </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
