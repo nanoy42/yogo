@@ -24,4 +24,7 @@ urlpatterns = [
     path('change_task/<int:task_id>', views.change_task, name="change_task"),
     path('<int:pk>/addUserToProjectAdmins/<int:user_id>', views.add_user_to_project_admins, name="addUserToProjectAdmins"),
     path('<int:pk>/removeUserFromProjectAdmins/<int:user_id>', views.remove_user_from_project_admins, name="removeUserFromProjectAdmins"),
+    path('addBotToProject/<int:pk>', views.addBotToProject, name="addBotToProject"),
+    path('verifyBot/<int:pk>', views.verifyBot, name="verifyBot"),
+    path('deleteBot/<int:pk>', views.deleteBot, name="deleteBot"),
 ]
