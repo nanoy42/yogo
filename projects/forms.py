@@ -58,7 +58,7 @@ class BotForm(forms.ModelForm):
         model = Bot
         fields = ['chatId', ]
 
-class verifyForm(forms.Form):
+class VerifyForm(forms.Form):
     token = forms.CharField(label="Token", max_length=255)
 
 

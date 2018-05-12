@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, Tag, Task
+from .models import Project, Tag, Task, Bot
 # Register your models here.
 
 
@@ -10,3 +10,4 @@ class ProjectAdmin(admin.ModelAdmin):
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Tag)
 admin.site.register(Task)
+admin.site.register(Bot)
