@@ -46,8 +46,8 @@ def new_project(request):
     active = 2
     form = ProjectForm(request.POST or None)
     if(form.is_valid()):
-        form.instance.admins.add(request.user)
         form.save()
+        form.instance.admins.add(request.user)
         form.instance.users.add(request.user)
         form.save()
         messages.success(request, "Projet créé.")
