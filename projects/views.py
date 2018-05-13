@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from .models import Task, Project, Tag
-from .forms import ProjectForm, AddMemberForm, TagForm, TaskForm
+from .models import Task, Project, Tag, Bot
+from .forms import ProjectForm, AddMemberForm, TagForm, TaskForm, BotForm, VerifyForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from yogo.acl import project_admin_required, admin_required, member_required, ProjectAdminMixin
 from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from yogo.settings import TELEGRAM_TOKEN
+import telepot, secrets
 
 @login_required
 def my_projects(request):
@@ -44,8 +46,8 @@ def new_project(request):
     active = 2
     form = ProjectForm(request.POST or None)
     if(form.is_valid()):
-        form.instance.owner = request.user
         form.save()
+        form.instance.admins.add(request.user)
         form.instance.users.add(request.user)
         form.save()
         messages.success(request, "Projet créé.")
@@ -107,6 +109,11 @@ def update_project_info(request, pk):
     project_form = ProjectForm(request.POST or None, instance=project)
     if project_form.is_valid():
         project_form.save()
+        tbot = telepot.Bot(TELEGRAM_TOKEN)
+        for bot in project_form.instance.bot_set.all():
+            if(bot.verified):
+                msg = "Modification du projet " + project_form.instance.title + "\nTitre : " + project_form.instance.title + "\nDescription : " + project_form.instance.description + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(project.pk)
+                tbot.sendMessage(bot.chatId, msg)
         messages.success(request, 'Le projet a bien été modifié')
         return redirect(reverse('projects:project', kwargs={'pk': pk}))
     messages.error(request, 'Erreur dans la modification du projet.')
@@ -129,6 +136,11 @@ def add_user_to_project(request, pk):
             messages.error(request, 'Cet utilisateur est déjà dans le projet')
         else:
             project.users.add(member)
+            tbot = telepot.Bot(TELEGRAM_TOKEN)
+            for bot in project.bot_set.all():
+                if(bot.verified):
+                    msg = "Modification du projet " + project.title + "\nL'utilisateur " + member.username + " a été ajouté au projet.\n" + request.META['HTTP_HOST'] + "/projects/" + str(project.pk)
+                    tbot.sendMessage(bot.chatId, msg)
             messages.success(request, "L'utilisateur a bien été ajouté")
     return redirect(reverse('projects:project', kwargs={'pk': pk}))
 
@@ -148,6 +160,11 @@ def delete_user_from_project(request, pk, user_id):
         messages.error(request, "L'utilisateur n'est pas dans le projet")
     else:
         project.users.remove(user)
+        tbot = telepot.Bot(TELEGRAM_TOKEN)
+        for bot in project.bot_set.all():
+            if(bot.verified):
+                msg = "Modification du projet " + project.title + "\nL'utilisateur " + user.username + " a été retiré au projet.\n" + request.META['HTTP_HOST'] + "/projects/" + str(project.pk)
+                tbot.sendMessage(bot.chatId, msg)
         messages.success(request, "L'utilisateur a bien été retiré du projet")
     return redirect(reverse('projects:project', kwargs={'pk': pk}))
 
@@ -265,6 +282,11 @@ def new_task(request, pk):
     form = TaskForm(project, request.POST or None)
     if(form.is_valid()):
         form.save()
+        tbot = telepot.Bot(TELEGRAM_TOKEN)
+        for bot in project.bot_set.all():
+            if(bot.verified):
+                msg = "Création de la tache " + f.instance.title + " du projet " + f.instance.project.title + "\nTitre : " + f.instance.title + "\n Description : " + f.instance.description + "\n Papsée par : " + str(f.instance.userAssigned) + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(f.instance.project.pk)
+                tbot.sendMessage(bot.chatId, msg)
         messages.success(request, 'La tâche a été créée.')
         return redirect(reverse('projects:project', kwargs={"pk": pk}))
     return render(request, 'form.html', {
@@ -302,6 +324,11 @@ def change_task_status(request, taskId, new_status):
         messages.error(request, "Le status demandé n'existe pas")
         return redirect(reverse('home'))
     task.save()
+    tbot = telepot.Bot(TELEGRAM_TOKEN)
+    for bot in task.project.bot_set.all():
+        if(bot.verified):
+            msg = "La tache " + task.title + " du projet " + task.project.title + " est passée en " + new_status + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(task.project.pk)
+            tbot.sendMessage(bot.chatId, msg)
     messages.success(request, "La tâche est passée en " + new_status)
     url_next = request.GET.get('next', reverse(
         'projects:project', kwargs={'pk': task.get_project().pk}))
@@ -321,6 +348,11 @@ def delete_task(request, taskId):
     except DoesNotExist:
         messages.error(request, "La tâche n'existe pas")
         return redirect(reverse('home'))
+    tbot = telepot.Bot(TELEGRAM_TOKEN)
+    for bot in task.project.bot_set.all():
+        if(bot.verified):
+            msg = "La tâche " + task.title + " a été supprimée du projet " + task.project.title + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(task.project.pk)
+            tbot.sendMessage(bot.chatId, msg)
     task.delete()
     messages.success(request, "La tâche a bien été supprimée")
     next_url = request.GET.get(
@@ -345,6 +377,11 @@ def paps(request, taskId):
         return redirect(reverse('home'))
     task.userAssigned = request.user
     task.save()
+    tbot = telepot.Bot(TELEGRAM_TOKEN)
+    for bot in task.project.bot_set.all():
+        if(bot.verified):
+            msg = "La tache " + task.title + " du projet " + task.project.title + " a été papsée par " + request.user.username + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(task.project.pk)
+            tbot.sendMessage(bot.chatId, msg)
     messages.success(request, "Vous avez paspé la tâche. Au boulot !")
     return redirect(reverse(
         'projects:project',
@@ -377,6 +414,11 @@ def depaps(request, taskId):
     else:
         task.userAssigned = None
         task.save()
+        tbot = telepot.Bot(TELEGRAM_TOKEN)
+        for bot in task.project.bot_set.all():
+            if(bot.verified):
+                msg = request.user.username + " a dépaps la tache " + task.title + " du projet" + task.project.title + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(task.project.pk)
+                tbot.sendMessage(bot.chatId, msg)
         messages.success(request, "Depaps réussi (flemmard)")
         next_url = request.GET.get(
             'next',
@@ -400,6 +442,11 @@ def change_task(request, task_id):
     f = TaskForm(task.project, request.POST or None, instance=task)
     if(f.is_valid()):
         f.save()
+        tbot = telepot.Bot(TELEGRAM_TOKEN)
+        for bot in f.instance.project.bot_set.all():
+            if(bot.verified):
+                msg = "Modification de la tache " + f.instance.title + " du projet " + f.instance.project.title + "\nTitre : " + f.instance.title + "\n Description : " + f.instance.description + "\n Papsée par : " + str(f.instance.userAssigned) + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(f.instance.project.pk)
+                tbot.sendMessage(bot.chatId, msg)
         messages.success(request, "La tâche a bien été modifiée")
         return redirect(reverse('projects:project', kwargs={'pk':task.project.pk}))
     return render(request, 'form.html', {'form': f, 'title': 'Modification de '+task.title, 'bouton': 'Modifier', 'icon': 'pencil-alt'})
@@ -416,6 +463,11 @@ def add_user_to_project_admins(request, pk, user_id):
         messages.error(request, "Le projet ou l'utilisateur n'existe pas")
         return redirect(reverse('home'))
     project.admins.add(user)
+    tbot = telepot.Bot(TELEGRAM_TOKEN)
+    for u in project.users.all():
+        if(u.telegrampreferences.verified and u.telegrampreferences.notifyProject):
+            msg = "Modification du projet " + project.title + "\nL'utilisateur " + user.username + " a été ajouté au admins du projet.\n" + request.META['HTTP_HOST'] + "/projects/" + str(project.pk)
+            tbot.sendMessage(u.telegrampreferences.chatId, msg)
     messages.success(request, "L'utilisateur a reçu les droits admins")
     return redirect(reverse(
         'projects:project',
@@ -438,6 +490,11 @@ def remove_user_from_project_admins(request, pk, user_id):
         messages.error(request, "Vous ne pouvez pas laisser un projet sans admins")
     else:
         project.admins.remove(user)
+        tbot = telepot.Bot(TELEGRAM_TOKEN)
+        for bot in project.bot_set.all():
+            if(bot.verified):
+                msg = "Modification du projet " + project.title + "\nL'utilisateur " + user.username + " a été retiré des admins du projet.\n" + request.META['HTTP_HOST'] + "/projects/" + str(project.pk)
+                tbot.sendMessage(bot.chatId, msg)
         messages.success(request, "Les droits admins ont bien été retirés à l'utilisateur")
     return redirect(reverse('projects:project', kwargs={'pk':pk}))
 
@@ -447,5 +504,67 @@ class ProjectDelete(ProjectAdminMixin, LoginRequiredMixin, DeleteView):
     success_message = "Le projet a bien été supprimé"
 
     def delete(self, request, *args, **kwargs):
+        self.pk = self.get_object().pk
+        self.title = self.get_object().title
+        self.bots = self.get_object().bot_set.all()
+        tbot = telepot.Bot(TELEGRAM_TOKEN)
+        for bot in self.bots:
+            if(bot.verified):
+                msg = "Supression du projet " + self.title
+                tbot.sendMessage(bot.chatId, msg)
         messages.success(self.request, self.success_message)
         return super(ProjectDelete, self).delete(request, *args, **kwargs)
+
+
+@login_required
+@project_admin_required(Project)
+def addBotToProject(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    form = BotForm(request.POST or None)
+    if(form.is_valid()):
+        form.instance.verified = False
+        form.instance.verifyToken = secrets.token_urlsafe(20)
+        form.instance.project = project
+        form.save()
+        bot = telepot.Bot(TELEGRAM_TOKEN)
+        bot.sendMessage(form.instance.chatId, "Veuillez vérifier votre identifiant avec ce token : " + form.instance.verifyToken)
+        messages.success(request, "Le bot a bien été créé")
+        messages.warning(request, "Vous devez vérifier le bot avant qu'il ne devienne actif")
+        return redirect(reverse('projects:project', kwargs={'pk':pk}))
+    return render(request, 'form.html', {'form': form, 'title': 'Nouveau bot pour le projet ' + project.title, 'bouton': 'Créer', 'icon': 'star'})
+
+
+@login_required
+@project_admin_required(Bot)
+def verifyBot(request, pk):
+    bot = get_object_or_404(Bot, pk=pk)
+    form = VerifyForm(request.POST or None)
+    if(form.is_valid()):
+        if(form.data['token'] == bot.verifyToken):
+            bot.verified = True
+            bot.save()
+            tbot = telepot.Bot(TELEGRAM_TOKEN)
+            tbot.sendMessage(bot.chatId, "Le bot a bien été vérifié")
+            messages.success(request, "Le bot a bien été vérifié")
+            return redirect(reverse('projects:project', kwargs={'pk':bot.project.pk}))
+        else:
+            messages.error(request, "Impossible de vérifier le bot")
+    return render(request, "form.html", {
+        'form': form,
+        'title': 'Vérication d\'un bot',
+        'bouton': 'Vérifier',
+        'icon': 'check-circle',
+    })
+
+
+@login_required
+@project_admin_required(Bot)
+def deleteBot(request, pk):
+    bot = get_object_or_404(Bot, pk=pk)
+    projectId = bot.project.pk
+    if(bot.verified):
+        tbot = telepot.Bot(TELEGRAM_TOKEN)
+        tbot.sendMessage(bot.chatId, "Adieu")
+    bot.delete()
+    messages.success(request, "Le bot a bien été supprimé")
+    return redirect(reverse('projects:project', kwargs={'pk':projectId}))

@@ -5,8 +5,8 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth import logout, login, authenticate
 from projects.models import Project
 from django.urls import reverse
-
 from yogo.acl import admin_required
+from yogo.settings import TELEGRAM_TOKEN
 
 def login_view(request):
     form = LoginForm(request.POST or None)
@@ -33,11 +33,13 @@ def manageUsers(request):
 
 def profile(request):
     form = MailForm(request.POST or None, instance=request.user)
+    form2 = TelegramPreferencesForm(None, instance=request.user.telegrampreferences)
+    form3 = verifyForm(None)
     if(form.is_valid()):
         form.save()
         messages.success(request, "L'adresse mail a bien été modifiée")
         return redirect(reverse('users:profile'))
-    return render(request, 'users/profile.html', {'form':form})
+    return render(request, 'users/profile.html', {'form':form, 'form2':form2, 'form3':form3})
 
 @admin_required
 def add_admin(request, user_id):

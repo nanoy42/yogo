@@ -1,0 +1,20 @@
+<h5>Gérer les bots</h5>
+<a href="{% url 'projects:addBotToProject' project.pk %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-star"></i> Ajouter un bot</a><br><br>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Chat Id</th>
+			<th>Vérifié</th>
+			<th>Administrer</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for bot in project.bot_set.all %}
+			<tr>
+				<td>{{bot.chatId}}</td>
+				<td>{{bot.verified|yesno:"Oui,Non"}}</td>
+				<td>{% if not bot.verified %}<a href="{% url 'projects:verifyBot' bot.pk %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-check-circle"></i> Vérifier</a> {% endif %} <a href="{% url 'projects:deleteBot' bot.pk %}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

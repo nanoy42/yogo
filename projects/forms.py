@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project, Tag, Task
+from .models import Project, Tag, Task, Bot
 from django.contrib.auth.models import User
 
 
@@ -17,7 +17,8 @@ class AddMemberForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.projectId = kwargs.pop('projectId')
         super(AddMemberForm, self).__init__(*args, **kwargs)
-        self.fields['member'].queryset = User.objects.exclude(pk__in=Project.objects.get(pk=self.projectId).users.all())
+        self.fields['member'].queryset = User.objects.exclude(
+            pk__in=Project.objects.get(pk=self.projectId).users.all())
     member = forms.ModelChoiceField(queryset=User.objects.all(), label="")
 
 
@@ -30,10 +31,11 @@ class TagForm(forms.ModelForm):
             'color': 'Couleur',
         }
 
+
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ('project','')
+        exclude = ('project', '')
         labels = {
             'title': 'Titre',
             'userAssigned': 'Qui dit paps ?',
@@ -42,9 +44,21 @@ class TaskForm(forms.ModelForm):
             'dependants': 'Dépendants',
             'active': 'Actif'
         }
+
     def __init__(self, project, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.instance.project = project
         self.fields['tags'].queryset = project.tag_set.all()
         self.fields['prerequisites'].queryset = project.task_set.all()
         self.fields['dependants'].queryset = project.task_set.all()
+
+
+class BotForm(forms.ModelForm):
+    class Meta:
+        model = Bot
+        fields = ['chatId', ]
+
+class VerifyForm(forms.Form):
+    token = forms.CharField(label="Token", max_length=255)
+
+

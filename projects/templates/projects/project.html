@@ -21,6 +21,9 @@
   <li class="nav-item">
     <a class="main_tab nav-link" href="#" data-target="div_tags" id="link_div_tags"><i class="fas fa-tags"></i> Gérer les tags</a>
   </li>
+  <li class="nav-item">
+    <a class="main_tab nav-link" href="#" data-target="div_bots" id="link_div_bots"><i class="fas fa-telegram"></i> Gérer les bots</a>
+  </li>
   {% endif %}
 </ul>
 <div id="div_tasks" style="display:block">
@@ -113,6 +116,10 @@
 <div id="div_tags" style="display:none">
 	<br>
 	{% include "projects/manageTags.html" %}
+</div>
+<div id="div_bots" style="display:none">
+	<br>
+	{% include "projects/manageBots.html" %}
 </div>
 {% endif %}
 

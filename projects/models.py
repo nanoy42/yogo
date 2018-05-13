@@ -134,3 +134,13 @@ class Task(models.Model):
     def get_project(self):
         """Used for ACL"""
         return self.project
+
+
+class Bot(models.Model):
+    chatId = models.IntegerField(default=0, null=True, blank=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    verified = models.BooleanField(default=False)
+    verifyToken = models.TextField(max_length=255, blank=True)
+
+    def get_project(self):
+        return self.project
