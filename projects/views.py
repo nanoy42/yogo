@@ -336,7 +336,7 @@ def change_task_status(request, taskId, new_status):
 
 
 @login_required
-@member_required(Project)
+@member_required(Task, url_arg="taskId")
 def delete_task(request, taskId):
     """Delete a task
 
