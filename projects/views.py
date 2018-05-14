@@ -285,7 +285,7 @@ def new_task(request, pk):
         tbot = telepot.Bot(TELEGRAM_TOKEN)
         for bot in project.bot_set.all():
             if(bot.verified):
-                msg = "Création de la tache " + f.instance.title + " du projet " + f.instance.project.title + "\nTitre : " + f.instance.title + "\n Description : " + f.instance.description + "\n Papsée par : " + str(f.instance.userAssigned) + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(f.instance.project.pk)
+                msg = "Création de la tache " + form.instance.title + " du projet " + form.instance.project.title + "\nTitre : " + form.instance.title + "\n Description : " + form.instance.description + "\n Papsée par : " + str(form.instance.userAssigned) + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(form.instance.project.pk)
                 tbot.sendMessage(bot.chatId, msg)
         messages.success(request, 'La tâche a été créée.')
         return redirect(reverse('projects:project', kwargs={"pk": pk}))
