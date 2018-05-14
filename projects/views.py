@@ -464,10 +464,10 @@ def add_user_to_project_admins(request, pk, user_id):
         return redirect(reverse('home'))
     project.admins.add(user)
     tbot = telepot.Bot(TELEGRAM_TOKEN)
-    for u in project.users.all():
-        if(u.telegrampreferences.verified and u.telegrampreferences.notifyProject):
+    for bot in project.bot_set.all():
+        if(bot.verified):
             msg = "Modification du projet " + project.title + "\nL'utilisateur " + user.username + " a été ajouté au admins du projet.\n" + request.META['HTTP_HOST'] + "/projects/" + str(project.pk)
-            tbot.sendMessage(u.telegrampreferences.chatId, msg)
+            tbot.sendMessage(bot.chatId, msg)
     messages.success(request, "L'utilisateur a reçu les droits admins")
     return redirect(reverse(
         'projects:project',
