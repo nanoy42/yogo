@@ -36,7 +36,8 @@ def my_tasks(request):
         'active': active,
         'todo': todo_tasks,
         'doing': doing_tasks,
-        'done': done_tasks
+        'done': done_tasks,
+        'next': True
     })
 
 
@@ -363,7 +364,7 @@ def delete_task(request, taskId):
 
 
 @login_required
-@member_required(Project)
+@member_required(Task, url_arg="taskId")
 def paps(request, taskId):
     """Assign a task to the current user.
 
@@ -383,10 +384,11 @@ def paps(request, taskId):
             msg = "La tache " + task.title + " du projet " + task.project.title + " a été papsée par " + request.user.username + "\n" + request.META['HTTP_HOST'] + "/projects/" + str(task.project.pk)
             tbot.sendMessage(bot.chatId, msg)
     messages.success(request, "Vous avez paspé la tâche. Au boulot !")
-    return redirect(reverse(
-        'projects:project',
-        kwargs={'pk': task.project.pk}
-    ))
+    next_url = request.GET.get(
+            'next',
+            reverse('projects:project', kwargs={'pk': task.project.pk})
+    )
+    return redirect(next_url)
 
 
 @login_required
