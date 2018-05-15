@@ -527,9 +527,13 @@ def addBotToProject(request, pk):
         form.instance.project = project
         form.save()
         bot = telepot.Bot(TELEGRAM_TOKEN)
-        bot.sendMessage(form.instance.chatId, "Veuillez vérifier votre identifiant avec ce token : " + form.instance.verifyToken)
-        messages.success(request, "Le bot a bien été créé")
-        messages.warning(request, "Vous devez vérifier le bot avant qu'il ne devienne actif")
+        try:
+            bot.sendMessage(form.instance.chatId, "Veuillez vérifier votre identifiant avec ce token : " + form.instance.verifyToken)
+            messages.success(request, "Le bot a bien été créé")
+            messages.warning(request, "Vous devez vérifier le bot avant qu'il ne devienne actif")
+        except:
+            form.instance.delete()
+            messages.error(request, "L'id du chat est incorrect")
         return redirect(reverse('projects:project', kwargs={'pk':pk}))
     return render(request, 'form.html', {'form': form, 'title': 'Nouveau bot pour le projet ' + project.title, 'bouton': 'Créer', 'icon': 'star'})
 
