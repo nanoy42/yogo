@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load project_extra %}
+{% load bootstrap4 %}
+{% block content %}
+<h2>{{project.title}}</h2>
+<p>{{project.description}}</p>
+<ul class="nav nav-tabs">
+	<li class="nav-item">
+		<a class="main_tab nav-link active" href="#" data-target="div_tasks" id="link_div_tasks"><i
+				class="fas fa-tasks"></i> Taches</a>
+	</li>
+	<li class="nav-item">
+		<a class="main_tab nav-link" href="#" data-target="div_project" id="link_div_project"><i
+				class="fas fa-paper-plane"></i> Projet</a>
+	</li>
+	<li class="nav-item">
+		<a class="main_tab nav-link" href="#" data-target="div_members" id="link_div_members"><i
+				class="fas fa-users"></i> Gérer les membres</a>
+	</li>
+	{% if request.user in project.admins.all %}
+	<li class="nav-item">
+		<a class="main_tab nav-link" href="#" data-target="div_update" id="link_div_update"><i
+				class="fas fa-pencil-alt"></i> Modifier le projet</a>
+	</li>
+	<li class="nav-item">
+		<a class="main_tab nav-link" href="#" data-target="div_tags" id="link_div_tags"><i class="fas fa-tags"></i>
+			Gérer les tags</a>
+	</li>
+	{% endif %}
+</ul>
+<div id="div_tasks" style="display:block">
+	<br />
+	<a class="btn btn-outline-primary" href="{% url 'projects:newTask' project.pk %}"><i class="fa fa-star"></i> Ajouter
+		une tâche</a>
+	<hr>
+	{% include "projects/display_tasks.html" %}
+</div>
+<div id="div_project" style="display:none">
+	<table class="table table-striped">
+		<tbody>
+			<tr>
+				<th colspan="2" width="50%">Description</th>
+				<td colspan="2" width="50%">{{project.description}}</td>
+			</tr>
+			<tr>
+				<th>Création</th>
+				<td>{{project.creationDate}}</td>
+				<th>Admins</th>
+				<td>{% for admin in project.admins.all%}{{admin}}, {% endfor %}</td>
+			</tr>
+			<tr>
+				<th>Projet actif</th>
+				<td>{% if project.active %}Oui{% else %}Non{% endif %}</td>
+				<th>Nombre de membres</th>
+				<td>{{project.users.count}}</td>
+			</tr>
+			<tr>
+				<th>Nombre de tâches</th>
+				<td>{{project.task_set.count}}</td>
+				<th>Nombre de tâches To Do</th>
+				<td>{{todo.count}}</td>
+			</tr>
+			<tr>
+				<th>Nombre de tâches Doing</th>
+				<td>{{doing.count}}</td>
+				<th>Nombre de tâches Done</th>
+				<td>{{done.count}}</td>
+			</tr>
+			{% if request.user in project.admins.all %}
+			<tr>
+				<th colspan="2" width="50%">Supprimer le projet</th>
+				<td colspan="2" width="50%"><a href="{% url 'projects:deleteProject' project.pk %}"
+						class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
+			</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+<div id="div_members" style="display:none">
+	<br>
+	<h5>Ajouter un membre</h5>
+	<form method="post" action="{% url 'projects:add-user' project.pk %}" class="form">
+		{% csrf_token %}
+		{% bootstrap_form addMemberForm %}
+		<button class="btn btn-outline-primary"><i class="fa fa-user-plus"></i> Ajouter le membre</button>
+	</form>
+	<hr>
+	<h5>Liste des membres</h5>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Nom d'utilisateur</th>
+				<th>Nombre de tâches papsées</th>
+				{% if request.user in project.admins.all %}<th>Administrer</th>{% endif %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for member in project.users.all %}
+			<tr>
+				<td>{{member.username}} {% if member == project.owner %}<i
+						class="fa fa-star"></i>{% endif %}{% if member in project.admins.all %} <i
+						class="fa fa-star"></i>{% endif %}</td>
+				<td>{{taken_tasks|index:forloop.counter0}}</td>
+				{% if request.user in project.admins.all %}<td>{% if member not in project.admins.all %}<a
+						class="btn btn-outline-success btn-sm"
+						href="{% url 'projects:add-user-project-admins' project.pk member.pk %}"><i
+							class="fa fa-star"></i> Donner les droits admins</a> <a
+						class="btn btn-outline-danger btn-sm"
+						href="{% url 'projects:delete-user-from-project' project.pk member.pk %}"><i
+							class="fa fa-times"></i> Retirer du projet</a>{% else %}<a
+						class="btn btn-outline-warning btn-sm"
+						href="{% url 'projects:remove-user-project-admins' project.pk member.pk %}"><i
+							class="fa fa-times"></i> Retirer les droits admins</a>{% endif %}</td>{% endif %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% if request.user in project.admins.all %}
+<div id="div_update" style="display:none">
+	<br>
+	<h5>Modifier le projet</h5>
+	<form action="{% url 'projects:update' project.pk %}" method="post" class="form">
+		{% csrf_token %}
+		{% bootstrap_form projectForm %}
+		<button class="btn btn-outline-primary"><i class="fa fa-pencil-alt"></i> Modifier</button>
+	</form>
+	<br>
+	<br>
+</div>
+<div id="div_tags" style="display:none">
+	<br>
+	{% include "projects/manage_tags.html" %}
+</div>
+{% endif %}
+
+<script>
+	$(document).ready(function () {
+		prec = "div_tasks"
+		$(".main_tab").click(function () {
+			$("#" + prec).attr('style', 'display:none');
+			$("#link_" + prec).removeClass("active");
+			$("#" + $(this).attr('data-target')).attr('style', 'display:block');
+			$("#link_" + $(this).attr('data-target')).addClass('active');
+			prec = $(this).attr('data-target');
+		});
+	});
+</script>
+
+{% endblock %}

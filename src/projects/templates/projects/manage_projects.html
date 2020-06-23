@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Gérer les projets</h3>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Projet</th>
+			<th>Nombre de tâches</th>
+			<th>Nombre d'utilisateurs</th>
+			<th>Admins</th>
+			<th>Actif</th>
+			<th>Administrer</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for project in projects %}
+		<tr>
+			<td>{{project.title}}</td>
+			<td>{{project.task_set.count}}</td>
+			<td>{{project.users.count}}</td>
+			<td>{% for admin in project.admins.all %}{{admin}}, {% endfor %}</td>
+			<td>{% if project.active %}Actif{% else %}Inactif{% endif %}</td>
+			<td>{% if project.active %}<a href="{% url 'projects:changeState' project.pk %}"
+					class="btn btn-outline-warning btn-sm"><i class="fa fa-folder-open"></i> Archiver</a>{% else %}<a
+					href="{%url 'projects:changeState' project.pk %}" class="btn btn-outline-warning btn-sm"><i
+						class="fa fa-folder-open"></i> Désarchiver</a>{% endif %} <a
+					href="{% url 'projects:deleteProject' project.pk %}?next={% url 'projects:manage-projects' %}"
+					class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a></td>
+		</tr>
+		{% endfor %}
+</table>
+{% endblock %}
